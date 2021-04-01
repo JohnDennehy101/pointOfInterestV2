@@ -1,4 +1,4 @@
-# Enterprise Web Development Module - Point of Interest Web Application
+# Enterprise Web Development Module - Point of Interest Web Application (Version 2)
 
 #### Student Name: John Dennehy Student ID: 20091408
 
@@ -9,6 +9,10 @@ address. POI data has many applications, including augmented reality browsers, l
 mapping and navigation systems.”
 
 I chose to focus on Irish national monuments for this assignment.
+
+## API
+
+More detail to be provided on API detail here.
 
 ## Technology Stack
 
