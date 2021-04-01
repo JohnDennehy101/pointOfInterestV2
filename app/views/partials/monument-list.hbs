@@ -1,0 +1,107 @@
+<div class="uk-grid-medium uk-child-width-1-3@m" uk-grid uk-height-match="target: > div > .uk-card > .uk-card-body">
+    {{#each monuments}}
+    <div>
+        <div class="uk-card uk-card-default">
+            <div class="uk-card-media-top uk-cover-container">
+                <img src="{{images.[0].imageUrl}}" class="uk-responsive-height uk-responsive-width" uk-cover alt="">
+                <canvas width="390" height="250"></canvas>
+            </div>
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">{{title}}</h3>
+
+
+            </div>
+            <div class="uk-card-footer">
+
+
+
+
+                <div uk-grid>
+                    <div class="uk-width-1-3@m">
+                        <a href="#delete-monument-modal" data-id="{{_id}}" uk-toggle class="deleteMonumentButton"
+                            style="width: 10px"><span class="uk-margin-small-right uk-align-left" uk-icon="trash"
+                                style="color: red"></span>
+                        </a>
+                    </div>
+                    <div class="uk-width-1-3@m">
+                        <a href="viewMonument/{{_id}}" class="uk-button uk-button-text">View</a>
+                    </div>
+                    <div class="uk-width-1-3@m">
+                        <a href="editMonumentView/{{_id}}" class="editMonumentButton"><span
+                                class="uk-margin-small-right uk-align-right" uk-icon="pencil"
+                                style="color: blue"></span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    {{/each}}
+
+    <!-- This is the modal -->
+    <div id="delete-monument-modal" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <h2 class="uk-modal-title">Delete Monument</h2>
+            <p id="deleteWarningMessage"></p>
+            <p class="uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+
+                <button class="uk-button uk-button-danger" type="submit" id="deleteButton"
+                    formmethod="post">Delete</button>
+
+
+            </p>
+        </div>
+    </div>
+
+    <form id="triggerSubmit" style="display:none">
+
+    </form>
+
+
+</div>
+
+<script>
+    const deleteMonumentButtons = document.getElementsByClassName('deleteMonumentButton')
+    const deleteButtonModal = document.getElementById('deleteButton')
+    const deleteWarningMessage = document.getElementById('deleteWarningMessage');
+    let recordId = ''
+
+    function deleteRecord(id) {
+        const response = fetch(`/deleteMonument/${id}`, {
+            method: 'post',
+            body: {
+
+            }
+        });
+    }
+
+
+
+    document.addEventListener('click', (e) => {
+
+        if (e.target.dataset.svg === 'trash') {
+
+            recordId = e.path[4].children[0].lastElementChild.dataset.id
+            let titleText = e.path[6].children[1].children[0].innerText
+
+            deleteButton.setAttribute('href', `deleteMonument/${recordId}`);
+            deleteWarningMessage.textContent = `Are you sure you want to delete the '${titleText}' record?`
+        }
+        if (e.target.id === 'deleteButton') {
+            deleteRecord(recordId)
+            document.getElementById('triggerSubmit').submit()
+
+        }
+
+
+    })
+
+
+
+
+
+
+</script>

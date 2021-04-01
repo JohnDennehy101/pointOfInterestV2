@@ -1,0 +1,27 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> title-card title="Point of Interest Application" subTitle="Please sign up"}}
+    {{> welcome-menu }}
+</div>
+<div class="uk-container uk-margin">
+    <div class="uk-child-width-expand uk-flex-center uk-flex-middle uk-text-center" uk-grid>
+        <div>
+            <img width="300" src="images/castle.jpg">
+        </div>
+        <div>
+            <div class="uk-card uk-card-default uk-card-body uk-box-shadow-large">
+                <h3 class="uk-card-title uk-text-center">Please enter details below</h3>
+                {{> signUpForm}}
+                {{> error }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let notification = '{{accountJustDeleted}}'
+
+    if (notification === 'true') {
+        UIkit.notification({ message: '<span uk-icon=\'icon: check\'></span> Successfully deleted account.' })
+    }
+
+</script>

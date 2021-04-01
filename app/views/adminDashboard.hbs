@@ -1,0 +1,60 @@
+<div class="uk-flex uk-flex-center uk-flex-middle uk-grid-small" uk-grid>
+    {{> title-card title="Admin User" subTitle="Admin Dashboard"}}
+    {{> main-menu }}
+</div>
+
+<div class="uk-container uk-margin">
+
+    <div class="uk-width-expand@m">
+        <h1 class="uk-heading">Application Overview</h1>
+    </div>
+
+
+    <div class="uk-divider-icon"></div>
+
+
+    <div class="uk-child-width-expand@s uk-text-center uk-margin" uk-grid>
+        <div>
+            {{> adminTotalNumberOfMonumentsComponent}}
+        </div>
+        <div>
+            {{> adminTotalNumberOfCategoriesComponent}}
+        </div>
+        <div>
+            {{> adminTotalNumberOfUsersComponent}}
+        </div>
+    </div>
+
+
+
+    <div class="uk-card uk-card-default uk-card-body uk-padding-small">
+        <h4 class="uk-text-primary uk-text-center">User Overview</h4>
+        {{> userOverviewForm}}
+    </div>
+
+
+    {{> adminDeleteUserModal}}
+
+
+</div>
+
+
+<script>
+    let deleteAccountForm = document.getElementById('deleteAccountForm')
+
+    document.addEventListener('click', (e) => {
+
+        if (e.target.className == 'fas fa-trash-alt') {
+
+            let accountId = e.path[2].children[0].innerText
+            deleteAccountForm.action = `/deleteAccount/${accountId}`
+
+        }
+    })
+
+    let notification = '{{accountJustDeleted}}'
+
+    if (notification === 'true') {
+        UIkit.notification({ message: '<span uk-icon=\'icon: check\'></span> Successfully deleted account.' })
+    }
+</script>
