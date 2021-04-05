@@ -47,13 +47,13 @@ const Users = {
 
   deleteOne: {
     auth: false,
-    handler: async function (request, h) {
-      const user = await User.remove({ _id: request.params.id });
-      if (user) {
+    handler: async function(request, h) {
+      const response = await User.deleteOne({ _id: request.params.id });
+      if (response.deletedCount == 1) {
         return { success: true };
       }
-      return Boom.notFound("id not found");
-    },
+      return Boom.notFound('id not found');
+    }
   },
 };
 

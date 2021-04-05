@@ -43,7 +43,6 @@ async function updateSeededData(data) {
 
     for (let individualCategory in categories) {
       if (categories[individualCategory].monuments.includes(monuments[index]._id) && categories[individualCategory].monuments.length > 0) {
-        console.log(monuments[index]._id)
         monuments[index].categories.push(categories[individualCategory]._id)
       }
     }

@@ -17,7 +17,6 @@ class AccountService {
     try {
       const response = await axios.get(this.baseUrl + "/api/users/" + id);
       return response.data;
-      return response.data;
     } catch (e) {
       return null;
     }

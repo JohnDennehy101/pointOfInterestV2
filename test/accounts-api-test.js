@@ -34,4 +34,43 @@ suite("Account API tests", function () {
     const c2 = await accountService.getUser(c1._id);
     assert.deepEqual(c1, c2);
   });
+
+  test("get invalid user", async function () {
+    const c1 = await accountService.getUser("1234");
+    assert.isNull(c1);
+    const c2 = await accountService.getUser("012345678901234567890123");
+    assert.isNull(c2);
+  });
+
+  test("get detailed info on users", async function () {
+    for (let c of users) {
+      await accountService.createUser(c);
+    }
+
+    const allUsers = await accountService.getUsers();
+    for (var i = 0; i < users.length; i++) {
+      assert(_.some([allUsers[i]], users[i]), "returnedUser must be a superset of newUser");
+    }
+  });
+
+  test("check that users is empty", async function () {
+    const allUsers = await accountService.getUsers();
+    assert.equal(allUsers.length, 0);
+  });
+
+  test("create a user", async function () {
+    const returnedUser = await accountService.createUser(newUser);
+    assert(_.some([returnedUser], newUser), "returnedUser must be a superset of newUser");
+    assert.isDefined(returnedUser._id);
+  });
+
+  test("delete a user", async function () {
+    let c = await accountService.createUser(newUser);
+    assert(c._id != null);
+    await accountService.deleteOneUser(c._id);
+    c = await accountService.getUser(c._id);
+    assert(c == null);
+  });
+
+
 });
