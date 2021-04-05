@@ -47,6 +47,8 @@ const Monuments = {
 
       //Find all monuments
       const monuments = await Monument.find().populate("user").populate("images").lean();
+
+
       //Find province categories (for offset nav)
       const provinceCategories = await CategoryFunctionality.findProvinceCategories();
       //Find all other categories (for offset nav)

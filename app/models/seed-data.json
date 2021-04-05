@@ -67,23 +67,28 @@
     },
     "dublinCastleTwo": {
       "title": "Dublin Castle 2",
-      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616361540/nmm6ebxdmeeu9tjsymwd.jpg"
+      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616361540/nmm6ebxdmeeu9tjsymwd.jpg",
+      "monument": "->monuments.one"
     },
     "mallowCastleOne": {
       "title": "Mallow Castle One",
-      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616364369/zqf7qh1jqkq9a9nw6zrl.jpg"
+      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616364369/zqf7qh1jqkq9a9nw6zrl.jpg",
+      "monument": "->monuments.two"
     },
     "mallowCastleTwo": {
       "title": "Mallow Castle Two",
-      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616364316/fdzlh7jvaeecsnmoz5xh.jpg"
+      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616364316/fdzlh7jvaeecsnmoz5xh.jpg",
+      "monument": "->monuments.two"
     },
     "mallowCastleThree": {
       "title": "Mallow Castle Three",
-      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616364315/qvkghwgfitevcnux5czb.jpg"
+      "imageUrl": "https://res.cloudinary.com/monuments/image/upload/v1616364315/qvkghwgfitevcnux5czb.jpg",
+      "monument": "->monuments.two"
     },
     "default": {
       "title": "Default Image",
-      "imageUrl": "../images/pointOfInterestDefaultImage.png"
+      "imageUrl": "../images/pointOfInterestDefaultImage.png",
+      "monument": "->monuments.three"
     }
   },
   "categories": {
@@ -108,6 +113,12 @@
       "title": "Ulster",
       "monuments": [
         "->monuments.three"
+      ]
+    },
+    "castle": {
+      "title": "Castle",
+      "monuments": [
+        "->monuments.one", "->monuments.two", "->monuments.three"
       ]
     }
   }
