@@ -20,6 +20,7 @@
     "cloudinary": "^1.25.0",
     "dotenv": "^8.2.0",
     "handlebars": "^4.7.6",
+    "lodash": "^4.17.21",
     "mongoose": "^5.11.16",
     "streamifier": "^0.1.1"
   },

@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "firstName": "John",
+      "lastName": "Dennehy",
+      "email": "johndennehy101@gmail.com",
+      "password": "jd",
+      "userType": "Admin"
+    },
+    {
+      "firstName": "Marge",
+      "lastName": "Simpson",
+      "email": "marge@gmail.com",
+      "password": "test",
+      "userType": "User"
+    }
+  ],
+  "newUser": {
+  "firstName": "Homer",
+  "lastName": "Simpson",
+  "email": "homer@gmail.com",
+  "password": "testing",
+  "userType": "User"
+  }
+}
