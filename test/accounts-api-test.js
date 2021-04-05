@@ -2,7 +2,7 @@
 
 const assert = require("chai").assert;
 const AccountService = require("./account-service");
-const fixtures = require("./fixtures.json");
+const fixtures = require("./accounts-test-data.json");
 const _ = require('lodash');
 
 suite("Account API tests", function () {

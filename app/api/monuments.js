@@ -39,7 +39,7 @@ const Monuments = {
   deleteAll: {
     auth: false,
     handler: async function (request, h) {
-      await Monument.remove({});
+      await Monument.deleteMany({});
       return { success: true };
     },
   },
