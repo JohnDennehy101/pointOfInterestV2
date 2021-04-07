@@ -5,6 +5,7 @@ module.exports = [
   { method: 'GET', path: '/api/users', config: Users.find },
   { method: 'GET', path: '/api/users/{id}', config: Users.findOne },
   { method: "POST", path: "/api/users", config: Users.create },
+  { method: "PUT", path: "/api/users/{id}", config: Users.edit },
   { method: "DELETE", path: "/api/users/{id}", config: Users.deleteOne },
   { method: "DELETE", path: "/api/users", config: Users.deleteAll },
   { method: 'GET', path: '/api/monuments', config: Monuments.find },

@@ -32,11 +32,18 @@ class AccountService {
     return response.data;
   }
 
-
-
   async createUser(newUser) {
     const response = await axios.post(this.baseUrl + "/api/users", newUser);
     return response.data;
+  }
+
+  async editUser(id, editedUser) {
+    try {
+      const response = await axios.put(this.baseUrl + "/api/users/" + id, editedUser);
+      return response.data
+    } catch (e) {
+      return null;
+    }
   }
 }
 

@@ -37,6 +37,23 @@ const Users = {
     },
   },
 
+  edit: {
+    auth: false,
+    handler: async function (request, h) {
+
+      try {
+        const updatedUser = await User.updateOne({ _id: request.params.id }, request.payload);
+        if (!updatedUser) {
+          return Boom.notFound("No User with this id");
+        }
+        return updatedUser;
+      } catch (err) {
+        return Boom.notFound("No User with this id");
+      }
+
+    }
+  },
+
   deleteAll: {
     auth: false,
     handler: async function (request, h) {

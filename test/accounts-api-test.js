@@ -64,6 +64,20 @@ suite("Account API tests", function () {
     assert.isDefined(returnedUser._id);
   });
 
+  test("edit a user", async function() {
+    const returnedUser = await accountService.createUser(newUser);
+    let editedUser = returnedUser;
+    editedUser['firstName'] = 'First Name'
+    editedUser['lastName'] = 'Last Name'
+    const afterEditUser = await accountService.editUser(returnedUser._id, returnedUser);
+    assert.isDefined(afterEditUser);
+    assert.equal(1, afterEditUser.nModified);
+
+    const updatedUser = await accountService.getUser(returnedUser._id);
+    assert.equal(updatedUser['firstName'], 'First Name');
+    assert.equal(updatedUser['lastName'], 'Last Name');
+  })
+
   test("delete a user", async function () {
     let c = await accountService.createUser(newUser);
     assert(c._id != null);
