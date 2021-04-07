@@ -22,6 +22,16 @@ class MonumentService {
     }
   }
 
+  async editMonument(id, editedMonument) {
+    try {
+      const response = await axios.put(this.baseUrl + "/api/monuments/" + id, editedMonument);
+      return response.data
+    } catch (e) {
+      return null;
+    }
+  }
+
+
   async deleteAllMonuments() {
     const response = await axios.delete(this.baseUrl + "/api/monuments");
     return response.data;

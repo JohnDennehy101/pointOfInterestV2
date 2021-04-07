@@ -36,6 +36,22 @@ const Monuments = {
       return Boom.badImplementation("error creating monument");
     },
   },
+  edit: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const updatedMonument = await Monument.updateOne({ _id: request.params.id }, request.payload);
+        if (!updatedMonument) {
+          return Boom.notFound("No monument with this id");
+        }
+
+        return updatedMonument;
+      } catch (err) {
+        return Boom.notFound("No monument with this id");
+      }
+
+    }
+  },
   deleteAll: {
     auth: false,
     handler: async function (request, h) {

@@ -66,6 +66,15 @@ suite("Monument API tests", function () {
     assert.isDefined(returnedMonument._id);
   });
 
+  test("edit a monument", async function() {
+    const returnedMonument = await monumentService.createMonument(newMonument);
+    let editedMonument = returnedMonument;
+    editedMonument['title'] = 'Updated Title'
+    const afterEditMonument = await monumentService.editMonument(returnedMonument._id, returnedMonument);
+    assert.isDefined(afterEditMonument);
+    assert.equal(1, afterEditMonument.nModified)
+  })
+
   test("delete a monument", async function () {
     let c = await monumentService.createMonument(newMonument);
     assert(c._id != null);
