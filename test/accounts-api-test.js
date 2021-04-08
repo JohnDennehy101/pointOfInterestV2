@@ -4,6 +4,7 @@ const assert = require("chai").assert;
 const AccountService = require("./account-service");
 const fixtures = require("./accounts-test-data.json");
 const _ = require('lodash');
+const axios = require('axios');
 
 suite("Account API tests", function () {
   let users = fixtures.users;
@@ -64,12 +65,12 @@ suite("Account API tests", function () {
     assert.isDefined(returnedUser._id);
   });
 
-  test("edit a user", async function() {
+  test("fully edit a user", async function() {
     const returnedUser = await accountService.createUser(newUser);
     let editedUser = returnedUser;
     editedUser['firstName'] = 'First Name'
     editedUser['lastName'] = 'Last Name'
-    const afterEditUser = await accountService.editUser(returnedUser._id, returnedUser);
+    const afterEditUser = await accountService.fullyEditUser(returnedUser._id, returnedUser);
     assert.isDefined(afterEditUser);
     assert.equal(1, afterEditUser.nModified);
 
@@ -77,6 +78,48 @@ suite("Account API tests", function () {
     assert.equal(updatedUser['firstName'], 'First Name');
     assert.equal(updatedUser['lastName'], 'Last Name');
   })
+
+  test("patch user - firstName", async function() {
+    const returnedUser = await accountService.createUser(newUser);
+    const firstNameEdit = {firstName: 'John'};
+    const afterNameEdit = await accountService.editUserFirstName(returnedUser._id, firstNameEdit);
+    assert.isDefined(afterNameEdit);
+    assert.notEqual(returnedUser.firstName, afterNameEdit.firstName);
+  })
+
+  test("patch user - lastName", async function() {
+    const returnedUser = await accountService.createUser(newUser);
+    const lastNameEdit = {lastName: 'Dennehy'};
+    const afterNameEdit = await accountService.editUserLastName(returnedUser._id, lastNameEdit);
+    assert.isDefined(afterNameEdit);
+    assert.notEqual(returnedUser.lastName, afterNameEdit.lastName);
+  })
+
+  test("patch user - email", async function() {
+    const returnedUser = await accountService.createUser(newUser);
+    const emailEdit = {email: 'test123@gmail.com'};
+    const afterEmailEdit = await accountService.editUserEmail(returnedUser._id, emailEdit);
+    assert.isDefined(afterEmailEdit);
+    assert.notEqual(returnedUser.email, afterEmailEdit.email);
+  })
+
+  test("patch user - password", async function() {
+    const returnedUser = await accountService.createUser(newUser);
+    const passwordEdit = {password: 'password123'};
+    const afterPasswordEdit = await accountService.editUserPassword(returnedUser._id, passwordEdit);
+    assert.isDefined(afterPasswordEdit);
+    assert.notEqual(returnedUser.password, afterPasswordEdit.password);
+  })
+
+  test("patch user - user type", async function() {
+    const returnedUser = await accountService.createUser(newUser);
+    const userTypeEdit = {userType: 'Admin'};
+    const afterUserTypeEdit = await accountService.editUserType(returnedUser._id, userTypeEdit);
+    assert.isDefined(afterUserTypeEdit);
+    assert.notEqual(returnedUser.userType, afterUserTypeEdit.userType);
+  })
+
+
 
   test("delete a user", async function () {
     let c = await accountService.createUser(newUser);

@@ -37,14 +37,58 @@ class AccountService {
     return response.data;
   }
 
-  async editUser(id, editedUser) {
+  async fullyEditUser(id, editedUser) {
     try {
       const response = await axios.put(this.baseUrl + "/api/users/" + id, editedUser);
-      return response.data
+      return response.data;
     } catch (e) {
       return null;
     }
   }
+
+  async editUserFirstName(id, newFirstName) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/users/" + id, newFirstName);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+  async editUserLastName(id, newLastName) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/users/" + id, newLastName);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+  async editUserEmail(id, newEmail) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/users/" + id, newEmail);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async editUserPassword(id, newPassword) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/users/" + id, newPassword);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async editUserType(id, newUserType) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/users/" + id, newUserType);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
 }
 
 module.exports = AccountService;

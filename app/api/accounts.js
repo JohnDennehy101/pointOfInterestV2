@@ -54,6 +54,40 @@ const Users = {
     }
   },
 
+  partiallyEdit: {
+    auth: false,
+    handler: async function (request, h) {
+      try {
+        const user = await User.findOne({ _id: request.params.id });
+        if (!user) {
+          return Boom.notFound("No User with this id");
+        }
+        if (request.payload.firstName) {
+          user.firstName = request.payload.firstName;
+        }
+        if (request.payload.lastName) {
+          user.lastName = request.payload.lastName;
+        }
+        if (request.payload.email) {
+          user.email = request.payload.email;
+        }
+        if (request.payload.password) {
+          user.password = request.payload.password;
+        }
+        if (request.payload.userType) {
+          if (request.payload.userType.toLowerCase() === 'admin' || request.payload.userType.toLowerCase() === 'user') {
+            user.userType = request.payload.userType;
+          }
+
+        }
+        await user.save();
+        return user;
+      } catch (err) {
+        return Boom.notFound("No User with this id");
+      }
+    }
+  },
+
   deleteAll: {
     auth: false,
     handler: async function (request, h) {
