@@ -66,13 +66,49 @@ suite("Monument API tests", function () {
     assert.isDefined(returnedMonument._id);
   });
 
-  test("edit a monument", async function() {
+  test("fully edit a monument", async function() {
     const returnedMonument = await monumentService.createMonument(newMonument);
     let editedMonument = returnedMonument;
     editedMonument['title'] = 'Updated Title'
-    const afterEditMonument = await monumentService.editMonument(returnedMonument._id, returnedMonument);
+    const afterEditMonument = await monumentService.fullyEditMonument(returnedMonument._id, returnedMonument);
     assert.isDefined(afterEditMonument);
     assert.equal(1, afterEditMonument.nModified)
+  })
+
+  test("patch - edit monument title", async function() {
+    const returnedMonument = await monumentService.createMonument(newMonument);
+    const titleEdit = {title: 'New Title'};
+
+    const afterTitleEdit = await monumentService.editMonumentTitle(returnedMonument._id, titleEdit);
+    assert.isDefined(afterTitleEdit);
+    assert.notEqual(returnedMonument.title, afterTitleEdit.title);
+  })
+  test("patch - edit monument description", async function() {
+    const returnedMonument = await monumentService.createMonument(newMonument);
+    const descriptionEdit = {description: 'New Description'};
+
+    const afterDescriptionEdit = await monumentService.editMonumentDescription(returnedMonument._id, descriptionEdit);
+    assert.isDefined(afterDescriptionEdit);
+    assert.notEqual(returnedMonument.description, afterDescriptionEdit.description);
+  })
+  test("patch - edit monument county", async function() {
+    const returnedMonument = await monumentService.createMonument(newMonument);
+    const countyEdit = {county: 'Kerry'};
+
+    const afterCountyEdit = await monumentService.editMonumentCounty(returnedMonument._id, countyEdit);
+    assert.isDefined(afterCountyEdit);
+    assert.notEqual(returnedMonument.county, afterCountyEdit.county);
+  })
+  test("patch - edit monument coordinates", async function() {
+    const returnedMonument = await monumentService.createMonument(newMonument);
+    const coordinatesEdit = {coordinates: {
+      latitude: 10,
+        longitude: 34
+      }};
+
+    const afterCoordinatesEdit = await monumentService.editMonumentCoordinates(returnedMonument._id, coordinatesEdit);
+    assert.isDefined(afterCoordinatesEdit);
+    assert.notEqual(returnedMonument.coordinates, afterCoordinatesEdit.coordinates);
   })
 
   test("delete a monument", async function () {

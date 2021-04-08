@@ -22,10 +22,46 @@ class MonumentService {
     }
   }
 
-  async editMonument(id, editedMonument) {
+  async fullyEditMonument(id, editedMonument) {
     try {
       const response = await axios.put(this.baseUrl + "/api/monuments/" + id, editedMonument);
       return response.data
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async editMonumentTitle(id, title) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, title);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async editMonumentDescription(id, description) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, description);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async editMonumentCounty(id, county) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, county);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async editMonumentCoordinates(id, coordinates) {
+    try {
+      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, coordinates);
+      return response.data;
     } catch (e) {
       return null;
     }
