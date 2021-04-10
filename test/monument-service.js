@@ -89,8 +89,8 @@ class MonumentService {
 
 
 
-  async createMonument(newUser) {
-    const response = await axios.post(this.baseUrl + "/api/monuments", newUser);
+  async createMonument(newMonument) {
+    const response = await axios.post(this.baseUrl + "/api/monuments", newMonument);
     return response.data;
   }
 

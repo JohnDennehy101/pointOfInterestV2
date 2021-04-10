@@ -2,7 +2,10 @@
 
 const Monument = require('../models/monuments');
 const Image = require('../models/image');
+const ImageFunctionality = require('../utils/imageFunctionality');
+const CategoryFunctionality = require('../utils/categoryFunctionality');
 const Boom = require("@hapi/boom");
+
 
 const Monuments = {
   find: {
@@ -62,9 +65,48 @@ const Monuments = {
 
   create: {
     auth: false,
+    payload: {
+      output: "stream",
+      parse: true,
+      allow: "multipart/form-data",
+      maxBytes: 2 * 40000 * 40000,
+      multipart: true,
+    },
     handler: async function (request, h) {
-      const newMonument = new Monument(request.payload);
+      //image variable contains value from image input field
+      const data = await request.payload;
+      const image = await request.payload.imageUpload;
+
+      //Wrangle request payload to create cloudinary images, add image documents in mongodb and return image document ids and titles
+      let imageResult = await ImageFunctionality.addMonumentImages(image, data);
+      const newMonument = new Monument({
+        title: request.payload.title,
+        description: request.payload.description,
+        //user: user._id,
+        categories: [],
+        images: imageResult.imageIds,
+        province: request.payload.province,
+        county: request.payload.county,
+        coordinates: { latitude: request.payload.latitude, longitude: request.payload.longitude },
+      });
+
+      await newMonument.save();
+
+
+      //Adding province category (if province category does not exist, new one created and monument Id added).
+      //If province category already exists, monument id is appended to existing province category
+      let provinceCategoryId = await CategoryFunctionality.addMonumentProvinceCategory(
+        request.payload.province,
+        newMonument
+      );
+
+      //Adding province category document id to new monument categories array (which was empty on creation)
+      newMonument.categories.push(provinceCategoryId);
+
+      let monumentId = newMonument._id;
       const monument = await newMonument.save();
+      //Set monument field on each image document associated with newly created monument.
+      await ImageFunctionality.addMonumentIdToImageRecords(imageResult.imageTitles, monumentId);
       if (monument) {
         return h.response(monument).code(201);
       }

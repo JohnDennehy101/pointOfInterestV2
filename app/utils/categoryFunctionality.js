@@ -40,12 +40,13 @@ const CategoryFunctionality = {
       });
 
       await category.save();
+      return category._id;
     } else {
       category[0].monuments.push(newMonument._id);
       category[0].save();
+      return category[0]._id;
     }
 
-    return category._id;
   },
 
   //For all non-provincial categories (category checkboxes on add monument screen)
