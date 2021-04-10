@@ -55,6 +55,11 @@ suite("Monument API tests", function () {
     }
   });
 
+  test("get monument images - JSON", async function() {
+
+  })
+
+
   test("check that monuments is empty", async function () {
     const allMonuments = await monumentService.getMonuments();
     assert.equal(allMonuments.length, 0);

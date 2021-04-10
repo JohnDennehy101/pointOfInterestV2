@@ -1,6 +1,7 @@
 'use strict';
 
 const Monument = require('../models/monuments');
+const Image = require('../models/image');
 const Boom = require("@hapi/boom");
 
 const Monuments = {
@@ -25,6 +26,40 @@ const Monuments = {
       }
     },
   },
+  findMonumentImages: {
+   auth: false,
+   handler: async function (request, h) {
+     try {
+       const monument = await Monument.findOne({_id: request.params.id});
+
+       if (!monument) {
+         return Boom.notFound("No monument with this id");
+       }
+
+       const monumentImageObjectIds = monument.images;
+
+       let imageJsonResponse = {
+         "numberOfResults": monumentImageObjectIds.length,
+         "images": []
+       };
+
+       if (monumentImageObjectIds.length > 0) {
+           const images = await Image.find({_id: {$in: monumentImageObjectIds}});
+           for (let individualImage in images) {
+              imageJsonResponse["images"].push({
+                "title": images[individualImage].title,
+                "url": images[individualImage].imageUrl
+              })
+           }
+
+           return imageJsonResponse;
+       }
+     } catch (err) {
+       return Boom.notFound("No monument with this id")
+     }
+   }
+  },
+
   create: {
     auth: false,
     handler: async function (request, h) {

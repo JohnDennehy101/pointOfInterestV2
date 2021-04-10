@@ -22,6 +22,15 @@ class MonumentService {
     }
   }
 
+  async getMonumentImages(id) {
+    try {
+      const response = await axios.get(this.baseUrl + "/api/monuments/" + id + "/images");
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async fullyEditMonument(id, editedMonument) {
     try {
       const response = await axios.put(this.baseUrl + "/api/monuments/" + id, editedMonument);

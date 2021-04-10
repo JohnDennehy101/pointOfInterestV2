@@ -29,6 +29,7 @@ async function seed() {
 
 async function updateSeededData(data) {
   let monuments = await data.monuments;
+  let newMonument = await data.newMonument;
   let categories = await data.categories;
   let images = data.images;
 
