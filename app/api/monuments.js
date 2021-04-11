@@ -164,6 +164,9 @@ const Monuments = {
 
         monument.title = monumentEdit.title;
         monument.description = monumentEdit.description;
+        //NEED TO UPDATE CATEGORY PROVINCE HERE
+        monument.province = monumentEdit.province;
+        monument.county = monumentEdit.county;
         //monument.user = monumentEdit._id;
 
         //If imageResult.imageIds array length is greater than 0, set monument images field to newly created image ids

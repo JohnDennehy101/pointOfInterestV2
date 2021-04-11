@@ -139,11 +139,25 @@ suite("Monument API tests", function () {
   test("fully edit a monument", async function() {
     this.timeout(35000);
     const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
+    const monumentBeforeEdit = returnedMonument.newMonument;
     let editedMonument = returnedMonument.newMonument;
-    editedMonument['title'] = 'Updated Title'
-    const afterEditMonument = await monumentService.fullyEditMonument(returnedMonument.newMonument._id, returnedMonument.newMonument);
+    editedMonument['title'] = 'New Title';
+    editedMonument['description'] = 'new description';
+    editedMonument['county'] = 'Antrim';
+    editedMonument['province'] = 'Ulster';
+    editedMonument['coordinates']['latitude'] = 2.5;
+    editedMonument['coordinates']['longitude'] = 4.5;
+
+    const afterEditMonument = await monumentService.fullyEditMonument(editedMonument._id, editedMonument);
+
     assert.isDefined(afterEditMonument);
-    assert.equal(1, afterEditMonument.nModified)
+    assert.equal('New Title', afterEditMonument.title);
+    assert.equal('new description', afterEditMonument.description);
+    assert.equal('Antrim', afterEditMonument.county);
+    assert.equal('Ulster', afterEditMonument.province);
+    assert.equal(2.5, afterEditMonument.coordinates.latitude);
+    assert.equal(4.5, afterEditMonument.coordinates.longitude);
+    assert.equal(1, afterEditMonument.images.length);
   })
 
   test("patch - edit monument title", async function() {

@@ -36,7 +36,20 @@ class MonumentService {
 
   async fullyEditMonument(id, editedMonument) {
     try {
-      const response = await axios.put(this.baseUrl + "/api/monuments/" + id, editedMonument);
+      let requestFormData = new FormData();
+      requestFormData.append('title', String(editedMonument.title));
+      requestFormData.append('description', String(editedMonument.description));
+      requestFormData.append('latitude', String(editedMonument.coordinates.latitude));
+      requestFormData.append('longitude', String(editedMonument.coordinates.longitude));
+      requestFormData.append('county', String(editedMonument.county));
+      requestFormData.append('province', String(editedMonument.province));
+      requestFormData.append('test', 'true');
+      const image = fs.createReadStream(path.join(__dirname, './testImages/castle.jpg'));
+      requestFormData.append('imageUpload',  image);
+
+      const response = await axios.put(this.baseUrl + "/api/monuments/" + id, requestFormData, {
+        headers: requestFormData.getHeaders()
+      });
       return response.data
     } catch (e) {
       return null;
