@@ -93,8 +93,7 @@ suite("Monument API tests", function () {
     this.timeout(35000);
 
     const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-    console.log(returnedMonument.newMonument);
-    console.log(newMonument);
+
     assert.equal(returnedMonument.newMonument.title, newMonument.title);
     assert.equal(returnedMonument.newMonument.description, newMonument.description);
     assert.equal(returnedMonument.newMonument.county, newMonument.county);
@@ -151,7 +150,7 @@ suite("Monument API tests", function () {
     const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
     const titleEdit = {title: 'New Title'};
 
-    const afterTitleEdit = await monumentService.editMonumentTitle(returnedMonument.newMonument._id, titleEdit);
+    const afterTitleEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, titleEdit);
     assert.isDefined(afterTitleEdit);
     assert.notEqual(returnedMonument.newMonument.title, afterTitleEdit.title);
   })
@@ -159,7 +158,7 @@ suite("Monument API tests", function () {
     const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
     const descriptionEdit = {description: 'New Description'};
 
-    const afterDescriptionEdit = await monumentService.editMonumentDescription(returnedMonument.newMonument._id, descriptionEdit);
+    const afterDescriptionEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, descriptionEdit);
     assert.isDefined(afterDescriptionEdit);
     assert.notEqual(returnedMonument.newMonument.description, afterDescriptionEdit.description);
   })
@@ -167,7 +166,7 @@ suite("Monument API tests", function () {
     const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
     const countyEdit = {county: 'Kerry'};
 
-    const afterCountyEdit = await monumentService.editMonumentCounty(returnedMonument.newMonument._id, countyEdit);
+    const afterCountyEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, countyEdit);
     assert.isDefined(afterCountyEdit);
     assert.notEqual(returnedMonument.newMonument.county, afterCountyEdit.county);
   })
@@ -178,7 +177,7 @@ suite("Monument API tests", function () {
         longitude: 34
       }};
 
-    const afterCoordinatesEdit = await monumentService.editMonumentCoordinates(returnedMonument.newMonument._id, coordinatesEdit);
+    const afterCoordinatesEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, coordinatesEdit);
     assert.isDefined(afterCoordinatesEdit);
     assert.notEqual(returnedMonument.newMonument.coordinates, afterCoordinatesEdit.coordinates);
   })

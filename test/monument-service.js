@@ -43,36 +43,9 @@ class MonumentService {
     }
   }
 
-  async editMonumentTitle(id, title) {
+  async partiallyEditMonument(id, fieldToEdit) {
     try {
-      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, title);
-      return response.data;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  async editMonumentDescription(id, description) {
-    try {
-      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, description);
-      return response.data;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  async editMonumentCounty(id, county) {
-    try {
-      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, county);
-      return response.data;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  async editMonumentCoordinates(id, coordinates) {
-    try {
-      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, coordinates);
+      const response = await axios.patch(this.baseUrl + "/api/monuments/" + id, fieldToEdit);
       return response.data;
     } catch (e) {
       return null;
@@ -103,43 +76,6 @@ class MonumentService {
     requestFormData.append('test', 'true');
     requestFormData.append('imageUpload',  '');
 
-
-
-    //const image = fs.createReadStream(path.join(__dirname, './testImages/castle.jpg'));
-
-
-
-
-    //let image = bufferToStream(buf);
-    // image.hapi = {
-    //   filename: "testing",
-    // }
-    //console.log(image);
-
-
-
-    // const imageObject = {
-    //   _data: image,
-    //   hapi: {
-    //     filename: "testImage1.jpg",
-    //   },
-    //   length: 1,
-    // }
-
-
-    // const imageObject = {
-    //   _data: buf,
-    //   hapi: {
-    //     filename: "",
-    //   },
-    //   length: 1,
-    // }
-
-
-
-
-
-
     const response = await axios.post(this.baseUrl + "/api/monuments", requestFormData,  {
       headers: requestFormData.getHeaders()
     });
@@ -158,43 +94,6 @@ class MonumentService {
     requestFormData.append('test', 'true');
     const image = fs.createReadStream(path.join(__dirname, './testImages/castle.jpg'));
     requestFormData.append('imageUpload',  image);
-
-
-
-
-
-
-
-
-    //let image = bufferToStream(buf);
-    // image.hapi = {
-    //   filename: "testing",
-    // }
-    //console.log(image);
-
-
-
-    // const imageObject = {
-    //   _data: image,
-    //   hapi: {
-    //     filename: "testImage1.jpg",
-    //   },
-    //   length: 1,
-    // }
-
-
-    // const imageObject = {
-    //   _data: buf,
-    //   hapi: {
-    //     filename: "",
-    //   },
-    //   length: 1,
-    // }
-
-
-
-
-
 
     const response = await axios.post(this.baseUrl + "/api/monuments", requestFormData,  {
       headers: requestFormData.getHeaders()
