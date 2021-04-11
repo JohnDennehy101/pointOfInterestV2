@@ -6,14 +6,16 @@
       "lastName": "Dennehy",
       "email": "johndennehy101@gmail.com",
       "password": "jd",
-      "userType": "Admin"
+      "userType": "Admin",
+      "numberOfRecords": 1
     },
     "marge": {
       "firstName": "Marge",
       "lastName": "Simpson",
       "email": "marge@gmail.com",
       "password": "test",
-      "userType": "User"
+      "userType": "User",
+      "numberOfRecords": 2
 }
   },
   "monuments": {

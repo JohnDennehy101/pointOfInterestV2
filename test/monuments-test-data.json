@@ -1,15 +1,15 @@
 {
   "monuments": [
     {
-    "title": "Dublin Castle",
-    "description": "Erected in the early thirteenth century on the site of a Viking settlement, Dublin Castle served for centuries as the headquarters of English, and later British, administration in Ireland. In 1922, following Ireland’s independence, Dublin Castle was handed over to the new Irish government. It is now a major government complex and a key tourist attraction",
-    "coordinates": {
-      "latitude": 6.543,
-      "longitude": 8.5432
-    },
-    "images": [],
-    "categories": [],
-    "province": "Leinster",
+      "title": "Dublin Castle",
+      "description": "Erected in the early thirteenth century on the site of a Viking settlement, Dublin Castle served for centuries as the headquarters of English, and later British, administration in Ireland. In 1922, following Ireland’s independence, Dublin Castle was handed over to the new Irish government. It is now a major government complex and a key tourist attraction",
+      "coordinates": {
+        "latitude": 6.543,
+        "longitude": 8.5432
+      },
+      "images": [],
+      "categories": [],
+      "province": "Leinster",
       "county": "Dublin"
     },
     {
@@ -47,6 +47,7 @@
     "images": [],
     "categories": [],
     "province": "Leinster",
-    "county": "Dublin"
+    "county": "Dublin",
+    "imageUpload": ""
   }
 }

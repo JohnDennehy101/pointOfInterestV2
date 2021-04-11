@@ -40,7 +40,11 @@ const ImageFunctionality = {
 
   //Add image documents for each image passed in request. If no image passed, default image is used.
   //Returns image document ids and image document titles
-  addMonumentImages: async function (image, data) {
+  addMonumentImages: async function (image, data, cloudinaryConfigTesting = undefined) {
+     if (cloudinaryConfigTesting != undefined) {
+    cloudinary.config(cloudinaryConfigTesting);
+     }
+
     let monumentImageUrlArray = [];
     let monumentImageTitleArray = [];
     let cloudinaryPromise, cloudinarySecureUrl;
@@ -70,8 +74,7 @@ const ImageFunctionality = {
     } else {
       const imageBuffer = await this.handleFileUpload(image);
       let imageFileName = "";
-
-      if (data.imageUpload.hapi.filename.length !== 0) {
+      if (data.imageUpload !== '' && data.imageUpload.hapi.filename.length !== 0) {
         cloudinaryPromise = this.awaitStreamUpload(imageBuffer);
         imageFileName = image.hapi.filename;
         cloudinarySecureUrl = cloudinaryPromise.then((data) => {
@@ -91,7 +94,10 @@ const ImageFunctionality = {
         imageUrl: cloudinarySecureUrlPromiseResolved,
       });
 
-      await newImage.save();
+       if (cloudinaryConfigTesting == undefined) {
+        await newImage.save();
+      }
+
 
       monumentImageUrlArray.push(newImage._id);
       monumentImageTitleArray.push(newImage.title);

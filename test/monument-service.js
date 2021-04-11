@@ -1,6 +1,9 @@
 "use strict";
 
 const axios = require("axios");
+let FormData = require('form-data');
+const path = require('path');
+const fs = require('fs');
 const baseUrl = "http://localhost:3000";
 
 class MonumentService {
@@ -89,8 +92,114 @@ class MonumentService {
 
 
 
-  async createMonument(newMonument) {
-    const response = await axios.post(this.baseUrl + "/api/monuments", newMonument);
+  async createMonumentWithoutImages(newMonument) {
+    let requestFormData = new FormData();
+    requestFormData.append('title', String(newMonument.title));
+    requestFormData.append('description', String(newMonument.description));
+    requestFormData.append('latitude', newMonument.coordinates.latitude);
+    requestFormData.append('longitude', newMonument.coordinates.longitude);
+    requestFormData.append('county', String(newMonument.county));
+    requestFormData.append('province', String(newMonument.province));
+    requestFormData.append('test', 'true');
+    requestFormData.append('imageUpload',  '');
+
+
+
+    //const image = fs.createReadStream(path.join(__dirname, './testImages/castle.jpg'));
+
+
+
+
+    //let image = bufferToStream(buf);
+    // image.hapi = {
+    //   filename: "testing",
+    // }
+    //console.log(image);
+
+
+
+    // const imageObject = {
+    //   _data: image,
+    //   hapi: {
+    //     filename: "testImage1.jpg",
+    //   },
+    //   length: 1,
+    // }
+
+
+    // const imageObject = {
+    //   _data: buf,
+    //   hapi: {
+    //     filename: "",
+    //   },
+    //   length: 1,
+    // }
+
+
+
+
+
+
+    const response = await axios.post(this.baseUrl + "/api/monuments", requestFormData,  {
+      headers: requestFormData.getHeaders()
+    });
+
+    return response.data;
+  }
+
+  async createMonumentWithImage(newMonument) {
+    let requestFormData = new FormData();
+    requestFormData.append('title', String(newMonument.title));
+    requestFormData.append('description', String(newMonument.description));
+    requestFormData.append('latitude', String(newMonument.coordinates.latitude));
+    requestFormData.append('longitude', String(newMonument.coordinates.longitude));
+    requestFormData.append('county', String(newMonument.county));
+    requestFormData.append('province', String(newMonument.province));
+    requestFormData.append('test', 'true');
+    const image = fs.createReadStream(path.join(__dirname, './testImages/castle.jpg'));
+    requestFormData.append('imageUpload',  image);
+
+
+
+
+
+
+
+
+    //let image = bufferToStream(buf);
+    // image.hapi = {
+    //   filename: "testing",
+    // }
+    //console.log(image);
+
+
+
+    // const imageObject = {
+    //   _data: image,
+    //   hapi: {
+    //     filename: "testImage1.jpg",
+    //   },
+    //   length: 1,
+    // }
+
+
+    // const imageObject = {
+    //   _data: buf,
+    //   hapi: {
+    //     filename: "",
+    //   },
+    //   length: 1,
+    // }
+
+
+
+
+
+
+    const response = await axios.post(this.baseUrl + "/api/monuments", requestFormData,  {
+      headers: requestFormData.getHeaders()
+    });
+
     return response.data;
   }
 

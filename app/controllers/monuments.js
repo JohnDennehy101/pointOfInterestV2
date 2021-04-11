@@ -158,7 +158,8 @@ const Monuments = {
       await user.save();
 
       //Wrangle request payload to create cloudinary images, add image documents in mongodb and return image document ids and titles
-      let imageResult = await ImageFunctionality.addMonumentImages(image, data);
+      let imageResult = await ImageFunctionality.addMonumentImages(image, data, undefined);
+
 
       //Add new monument (note empty categories field on initial creation)
       const newMonument = new Monument({
@@ -171,6 +172,8 @@ const Monuments = {
         county: request.payload.county,
         coordinates: { latitude: request.payload.latitude, longitude: request.payload.longitude },
       });
+
+
 
       await newMonument.save();
 

@@ -76,7 +76,7 @@ const Monuments = {
       //image variable contains value from image input field
       const data = await request.payload;
       const image = await request.payload.imageUpload;
-
+      console.log(data);
       //Wrangle request payload to create cloudinary images, add image documents in mongodb and return image document ids and titles
       let imageResult = await ImageFunctionality.addMonumentImages(image, data);
       const newMonument = new Monument({
@@ -91,6 +91,13 @@ const Monuments = {
       });
 
       await newMonument.save();
+
+      if (request.payload.test) {
+        return {
+          newMonument: newMonument,
+          imageResult: imageResult
+        }
+      }
 
 
       //Adding province category (if province category does not exist, new one created and monument Id added).

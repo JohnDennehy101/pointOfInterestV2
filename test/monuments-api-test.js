@@ -3,7 +3,14 @@
 const assert = require("chai").assert;
 const MonumentService = require("./monument-service");
 const monumentTestData = require("./monuments-test-data.json");
+const ImageFunctionality = require('../app/utils/imageFunctionality');
 const _ = require('lodash');
+const path = require('path');
+const fs = require('fs');
+const dotEnvPath = path.resolve('./.env');
+
+
+require('dotenv').config({ path: dotEnvPath});
 
 suite("Monument API tests", function () {
 
@@ -22,8 +29,9 @@ suite("Monument API tests", function () {
   });
 
   test("get all monuments", async function () {
+    this.timeout(35000);
     for (let c of monuments) {
-      await monumentService.createMonument(c);
+      await monumentService.createMonumentWithoutImages(c);
     }
 
     const allMonuments = await monumentService.getMonuments();
@@ -32,12 +40,14 @@ suite("Monument API tests", function () {
 
 
   test("get monument", async function () {
-    const c1 = await monumentService.createMonument(newMonument);
-    const c2 = await monumentService.getMonument(c1._id);
-    assert.deepEqual(c1, c2);
+    this.timeout(35000);
+    const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+    const c2 = await monumentService.getMonument(c1.newMonument._id);
+    assert.deepEqual(c1.newMonument, c2);
   });
 
   test("get invalid monument", async function () {
+    this.timeout(35000);
     const c1 = await monumentService.getMonument("1234");
     assert.isNull(c1);
     const c2 = await monumentService.getMonument("012345678901234567890123");
@@ -45,8 +55,9 @@ suite("Monument API tests", function () {
   });
 
   test("get detailed info on monuments", async function () {
+    this.timeout(35000);
     for (let c of monuments) {
-      await monumentService.createMonument(c);
+      await monumentService.createMonumentWithoutImages(c);
     }
 
     const allMonuments = await monumentService.getMonuments();
@@ -61,66 +72,122 @@ suite("Monument API tests", function () {
 
 
   test("check that monuments is empty", async function () {
+    this.timeout(35000);
     const allMonuments = await monumentService.getMonuments();
     assert.equal(allMonuments.length, 0);
   });
 
-  test("create a monument", async function () {
-    const returnedMonument = await monumentService.createMonument(newMonument);
-    assert(_.some([returnedMonument], newMonument), "returnedMonument must be a superset of newMonument");
-    assert.isDefined(returnedMonument._id);
+  test("create a monument - without images", async function () {
+    this.timeout(35000);
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
+    assert.equal(returnedMonument.newMonument.title, newMonument.title);
+    assert.equal(returnedMonument.newMonument.description, newMonument.description);
+    assert.equal(returnedMonument.newMonument.county, newMonument.county);
+    assert.equal(returnedMonument.newMonument.province, newMonument.province);
+    assert.equal(returnedMonument.newMonument.coordinates.latitude, newMonument.coordinates.latitude);
+    assert.equal(returnedMonument.newMonument.coordinates.longitude, newMonument.coordinates.longitude);
+    assert.isDefined(returnedMonument.newMonument._id);
   });
 
+  test("create a monument - with 1 image", async function() {
+    this.timeout(35000);
+
+    const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+    console.log(returnedMonument.newMonument);
+    console.log(newMonument);
+    assert.equal(returnedMonument.newMonument.title, newMonument.title);
+    assert.equal(returnedMonument.newMonument.description, newMonument.description);
+    assert.equal(returnedMonument.newMonument.county, newMonument.county);
+    assert.equal(returnedMonument.newMonument.province, newMonument.province);
+    assert.equal(returnedMonument.newMonument.coordinates.latitude, newMonument.coordinates.latitude);
+    assert.equal(returnedMonument.newMonument.coordinates.longitude, newMonument.coordinates.longitude);
+    assert.isDefined(returnedMonument.newMonument._id);
+  })
+
+  test("creation of Cloudinary image with MongoDB instance created", async function() {
+    this.timeout(35000);
+    const image = fs.readFileSync(path.join(__dirname, './testImages/castle.jpg'));
+    const imageObject = {
+      _data: image,
+      hapi: {
+        filename: "testImage1.jpg",
+      },
+      length: 1,
+    }
+
+    const dummyPayload = {
+      _data: image,
+      imageUpload: {
+        hapi: {
+          filename: "testImage1.jpg"
+        }
+      }
+    }
+    const cloudinaryConfig = {
+      cloud_name: "monuments",
+      api_key: process.env.cloudinary_api_key,
+      api_secret: process.env.cloudinary_api_secret,
+    }
+    let imageResult = await ImageFunctionality.addMonumentImages(imageObject, dummyPayload, cloudinaryConfig);
+
+    assert.isDefined(imageResult);
+    assert.equal(1, imageResult.imageIds.length);
+    assert.equal(1, imageResult.imageTitles.length);
+    assert.equal('testImage1.jpg', imageResult.imageTitles[0]);
+  })
+
+
   test("fully edit a monument", async function() {
-    const returnedMonument = await monumentService.createMonument(newMonument);
-    let editedMonument = returnedMonument;
+    this.timeout(35000);
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
+    let editedMonument = returnedMonument.newMonument;
     editedMonument['title'] = 'Updated Title'
-    const afterEditMonument = await monumentService.fullyEditMonument(returnedMonument._id, returnedMonument);
+    const afterEditMonument = await monumentService.fullyEditMonument(returnedMonument.newMonument._id, returnedMonument.newMonument);
     assert.isDefined(afterEditMonument);
     assert.equal(1, afterEditMonument.nModified)
   })
 
   test("patch - edit monument title", async function() {
-    const returnedMonument = await monumentService.createMonument(newMonument);
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
     const titleEdit = {title: 'New Title'};
 
-    const afterTitleEdit = await monumentService.editMonumentTitle(returnedMonument._id, titleEdit);
+    const afterTitleEdit = await monumentService.editMonumentTitle(returnedMonument.newMonument._id, titleEdit);
     assert.isDefined(afterTitleEdit);
-    assert.notEqual(returnedMonument.title, afterTitleEdit.title);
+    assert.notEqual(returnedMonument.newMonument.title, afterTitleEdit.title);
   })
   test("patch - edit monument description", async function() {
-    const returnedMonument = await monumentService.createMonument(newMonument);
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
     const descriptionEdit = {description: 'New Description'};
 
-    const afterDescriptionEdit = await monumentService.editMonumentDescription(returnedMonument._id, descriptionEdit);
+    const afterDescriptionEdit = await monumentService.editMonumentDescription(returnedMonument.newMonument._id, descriptionEdit);
     assert.isDefined(afterDescriptionEdit);
-    assert.notEqual(returnedMonument.description, afterDescriptionEdit.description);
+    assert.notEqual(returnedMonument.newMonument.description, afterDescriptionEdit.description);
   })
   test("patch - edit monument county", async function() {
-    const returnedMonument = await monumentService.createMonument(newMonument);
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
     const countyEdit = {county: 'Kerry'};
 
-    const afterCountyEdit = await monumentService.editMonumentCounty(returnedMonument._id, countyEdit);
+    const afterCountyEdit = await monumentService.editMonumentCounty(returnedMonument.newMonument._id, countyEdit);
     assert.isDefined(afterCountyEdit);
-    assert.notEqual(returnedMonument.county, afterCountyEdit.county);
+    assert.notEqual(returnedMonument.newMonument.county, afterCountyEdit.county);
   })
   test("patch - edit monument coordinates", async function() {
-    const returnedMonument = await monumentService.createMonument(newMonument);
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
     const coordinatesEdit = {coordinates: {
       latitude: 10,
         longitude: 34
       }};
 
-    const afterCoordinatesEdit = await monumentService.editMonumentCoordinates(returnedMonument._id, coordinatesEdit);
+    const afterCoordinatesEdit = await monumentService.editMonumentCoordinates(returnedMonument.newMonument._id, coordinatesEdit);
     assert.isDefined(afterCoordinatesEdit);
-    assert.notEqual(returnedMonument.coordinates, afterCoordinatesEdit.coordinates);
+    assert.notEqual(returnedMonument.newMonument.coordinates, afterCoordinatesEdit.coordinates);
   })
 
   test("delete a monument", async function () {
-    let c = await monumentService.createMonument(newMonument);
-    assert(c._id != null);
-    await monumentService.deleteOneMonument(c._id);
-    c = await monumentService.getMonument(c._id);
+    let c = await monumentService.createMonumentWithoutImages(newMonument);
+    assert(c.newMonument._id != null);
+    await monumentService.deleteOneMonument(c.newMonument._id);
+    c = await monumentService.getMonument(c.newMonument._id);
     assert(c == null);
   });
 
