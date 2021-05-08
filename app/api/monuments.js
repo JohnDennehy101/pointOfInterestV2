@@ -13,7 +13,7 @@ const Monuments = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-      const monuments = await Monument.find();
+      const monuments = await Monument.find().populate("user").populate("images").populate("categories").lean();
       return monuments;
     },
   },

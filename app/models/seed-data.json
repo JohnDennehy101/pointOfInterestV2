@@ -89,7 +89,7 @@
     },
     "default": {
       "title": "Default Image",
-      "imageUrl": "../images/pointOfInterestDefaultImage.png",
+      "imageUrl": "/src/assets/pointOfInterestDefaultImage.png",
       "monument": "->monuments.three"
     }
   },
