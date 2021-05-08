@@ -45,6 +45,14 @@ class AccountService {
       return null;
     }
   }
+  async authenticate(user) {
+    try {
+      const response = await axios.post(this.baseUrl + "/api/users/authenticate", user);
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
 
   async editUserFirstName(id, newFirstName) {
     try {
