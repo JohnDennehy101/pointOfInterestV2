@@ -24,14 +24,18 @@ const Users = {
     },
   },
   find: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       const users = await User.find();
       return users;
     },
   },
    findOne: {
-    auth: false,
+     auth: {
+       strategy: "jwt",
+     },
     handler: async function (request, h) {
       try {
         const user = await User.findOne({ _id: request.params.id });
@@ -57,7 +61,9 @@ const Users = {
   },
 
   edit: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
 
       try {
@@ -74,7 +80,9 @@ const Users = {
   },
 
   partiallyEdit: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const user = await User.findOne({ _id: request.params.id });
@@ -116,7 +124,9 @@ const Users = {
   },
 
   deleteOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function(request, h) {
       const response = await User.deleteOne({ _id: request.params.id });
       if (response.deletedCount == 1) {

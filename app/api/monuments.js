@@ -9,14 +9,18 @@ const Boom = require("@hapi/boom");
 
 const Monuments = {
   find: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       const monuments = await Monument.find();
       return monuments;
     },
   },
   findOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const monument = await Monument.findOne({ _id: request.params.id });
@@ -30,7 +34,9 @@ const Monuments = {
     },
   },
   findMonumentImages: {
-   auth: false,
+    auth: {
+      strategy: "jwt",
+    },
    handler: async function (request, h) {
      try {
        const monument = await Monument.findOne({_id: request.params.id});
@@ -64,7 +70,9 @@ const Monuments = {
   },
 
   create: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     payload: {
       output: "stream",
       parse: true,
@@ -120,7 +128,9 @@ const Monuments = {
     },
   },
   edit: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     payload: {
       output: "stream",
       parse: true,
@@ -229,7 +239,9 @@ const Monuments = {
     }
   },
   partiallyEdit: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       try {
         const allCounties = [ 'antrim',
@@ -297,14 +309,18 @@ const Monuments = {
     }
   },
   deleteAll: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       await Monument.deleteMany({});
       return { success: true };
     },
   },
   deleteOne: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function(request, h) {
       const response = await Monument.deleteOne({ _id: request.params.id });
       if (response.deletedCount == 1) {

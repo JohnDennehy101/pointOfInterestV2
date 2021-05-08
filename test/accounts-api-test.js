@@ -10,23 +10,41 @@ suite("Account API tests", function () {
   let users = fixtures.users;
   let newUser = fixtures.newUser;
 
-  const accountService = new AccountService("http://localhost:3000");
+  const accountService = new AccountService("http://localhost:4000");
 
-  setup(async function () {
+  // setup(async function () {
+  //   await accountService.deleteAllUsers();
+  // });
+
+  suiteSetup(async function () {
+    this.timeout(35000);
     await accountService.deleteAllUsers();
+    const returnedUser = await accountService.createUser(newUser);
+    const response = await accountService.authenticate(newUser);
   });
 
-  teardown(async function () {
+  suiteTeardown(async function () {
+    this.timeout(35000);
     await accountService.deleteAllUsers();
-  });
+    accountService.clearAuth();
+  })
+
+  // setup(async function () {
+  //   await accountService.deleteAllUsers();
+  // });
+  //
+  // teardown(async function () {
+  //   await accountService.deleteAllUsers();
+  // });
 
   test("get all users", async function () {
+    this.timeout(35000);
     for (let c of users) {
       await accountService.createUser(c);
     }
 
     const allUsers = await accountService.getUsers();
-    assert.equal(allUsers.length, users.length);
+    assert.equal(allUsers.length, users.length + 1);
   });
 
 
@@ -44,9 +62,20 @@ suite("Account API tests", function () {
   });
 
   test("get detailed info on users", async function () {
+    await accountService.deleteAllUsers();
+    const user = await accountService.createUser(newUser);
+    await accountService.authenticate(newUser);
     for (let c of users) {
       await accountService.createUser(c);
     }
+
+    const testUser = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      password: user.password,
+    };
+    users.unshift(testUser);
 
     const allUsers = await accountService.getUsers();
     for (var i = 0; i < users.length; i++) {
@@ -55,8 +84,11 @@ suite("Account API tests", function () {
   });
 
   test("check that users is empty", async function () {
-    const allUsers = await accountService.getUsers();
-    assert.equal(allUsers.length, 0);
+    await accountService.deleteAllUsers();
+    const user = await accountService.createUser(newUser);
+    await accountService.authenticate(newUser);
+    const allUser = await accountService.getUsers();
+    assert.equal(allUser.length, 1);
   });
 
   test("create a user", async function () {
