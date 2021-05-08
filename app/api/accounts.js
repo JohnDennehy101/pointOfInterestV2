@@ -51,12 +51,28 @@ const Users = {
   create: {
     auth: false,
     handler: async function (request, h) {
-      const newUser = new User(request.payload);
-      const user = await newUser.save();
-      if (user) {
-        return h.response(user).code(201);
+      const email = request.payload.email;
+
+      try {
+        // let checkEmailInUse = await User.findByEmail(email);
+        // console.log(checkEmailInUse);
+        // if (checkEmailInUse) {
+        //   const message = "Email address already in use";
+        //   throw Boom.unauthorized(message);
+        // }
+
+        const newUser = new User(request.payload);
+        const user = await newUser.save();
+        if (user) {
+          return h.response(user).code(201);
+        }
+        return Boom.badImplementation("error creating user");
+
       }
-      return Boom.badImplementation("error creating user");
+      catch (err) {
+        return Boom.badImplementation("error creating user");
+      }
+
     },
   },
 
