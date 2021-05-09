@@ -11,6 +11,7 @@ module.exports = [
   { method: "DELETE", path: "/api/users", config: Users.deleteAll },
   { method: 'GET', path: '/api/monuments', config: Monuments.find },
   { method: 'GET', path: '/api/monuments/{id}', config: Monuments.findOne },
+  { method: 'GET', path: '/api/monuments/{id}/weather', config: Monuments.getMonumentWeather },
   { method: 'GET', path: '/api/monuments/{id}/images', config: Monuments.findMonumentImages },
   { method: 'POST', path: '/api/users/authenticate', config: Users.authenticate },
   // { method: 'PATCH', path: '/api/monuments/{id}/images', config: Monuments.addMonumentImages },

@@ -4,6 +4,7 @@ const Monument = require('../models/monuments');
 const Image = require('../models/image');
 const ImageFunctionality = require('../utils/imageFunctionality');
 const CategoryFunctionality = require('../utils/categoryFunctionality');
+const WeatherFunctionality = require('../utils/weatherFunctionality');
 const Boom = require("@hapi/boom");
 
 
@@ -23,7 +24,7 @@ const Monuments = {
     },
     handler: async function (request, h) {
       try {
-        const monument = await Monument.findOne({ _id: request.params.id });
+        const monument = await Monument.findOne({ _id: request.params.id }).populate("user").populate("images").populate("categories").lean();
         if (!monument) {
           return Boom.notFound("No monument with this id");
         }
@@ -67,6 +68,31 @@ const Monuments = {
        return Boom.notFound("No monument with this id")
      }
    }
+  },
+
+  getMonumentWeather: {
+    auth: {
+      strategy: 'jwt',
+    },
+    handler: async function (request, h) {
+      const monument = await Monument.findOne({ _id: request.params.id });
+      let weatherApiResponse = await WeatherFunctionality.getWeatherDetails(monument);
+
+      //Wrangle api response to return values in format that will be consumed by view monument view
+      //If no response from api, everything set to undefined (to indicate that noWeatherDataComponent should be displayed)
+      let weatherDataObject = await WeatherFunctionality.manipulateApiResponse(weatherApiResponse);
+
+      return {
+        currentWeather: weatherDataObject.currentWeather,
+        currentWeatherFormattedObject: weatherDataObject.currentWeatherFormattedObject,
+        currentWeatherDescription: weatherDataObject.currentWeatherDescription,
+        weatherForecastNextWeek: weatherDataObject.weatherForecastNextWeek,
+        sunset: weatherDataObject.formattedSunsetTime,
+        weatherAvailable: weatherDataObject.weatherAvailable,
+      }
+
+    }
+
   },
 
   create: {
