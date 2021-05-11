@@ -84,7 +84,7 @@ const ImageFunctionality = {
         let dateObject = new Date();
         let dateString = dateObject.toString();
         imageFileName = "pointOfInterestDefaultImage " + dateString;
-        cloudinarySecureUrl = "../images/pointOfInterestDefaultImage.png";
+        cloudinarySecureUrl = "/src/assets/pointOfInterestDefaultImage.png";
       }
 
       let cloudinarySecureUrlPromiseResolved = await cloudinarySecureUrl;
@@ -138,7 +138,7 @@ const ImageFunctionality = {
         monumentImageUrlArray.push(newImage._id);
         monumentImageTitleArray.push(newImage.title);
       }
-    } else if (image.hapi.filename !== "") {
+    } else if (image.length === 0 || image.hapi.filename !== "") {
       let imageBuffer = await this.handleFileUpload(image);
       cloudinaryPromise = this.awaitStreamUpload(imageBuffer);
       cloudinarySecureUrl = cloudinaryPromise.then((data) => {
@@ -163,10 +163,10 @@ const ImageFunctionality = {
       let dateObject = new Date();
       let dateString = dateObject.toString();
       imageFileName = "pointOfInterestDefaultImage " + dateString;
-      cloudinarySecureUrl = "../images/pointOfInterestDefaultImage.png";
+      cloudinarySecureUrl = "/src/assets/pointOfInterestDefaultImage.png";
 
 
-      let cloudinarySecureUrlPromiseResolved = await cloudinarySecureUrl;
+      let cloudinarySecureUrlPromiseResolved = cloudinarySecureUrl;
 
       let newImage = new Image({
         title: imageFileName,
