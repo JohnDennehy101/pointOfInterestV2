@@ -38,7 +38,9 @@ const Users = {
      },
     handler: async function (request, h) {
       try {
-        const user = await User.findOne({ _id: request.params.id });
+        const decodedUserToken = await utils.decodeToken(request.params.id);
+        let userId = decodedUserToken.userId.replace(/"/g, "");
+        const user = await User.findOne({ _id: userId });
         if (!user) {
           return Boom.notFound("No User with this id");
         }
