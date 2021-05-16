@@ -146,7 +146,9 @@ const Users = {
       strategy: "jwt",
     },
     handler: async function(request, h) {
-      const response = await User.deleteOne({ _id: request.params.id });
+      const decodedUserToken = await utils.decodeToken(request.params.id);
+      let userId = decodedUserToken.userId;
+      const response = await User.deleteOne({ _id: userId });
       if (response.deletedCount == 1) {
         return { success: true };
       }
