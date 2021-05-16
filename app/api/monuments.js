@@ -240,120 +240,117 @@ const Monuments = {
       multipart: true,
     },
     handler: async function (request, h) {
+      let monument, updatedMonument;
       try {
 
-        const monumentEdit = request.payload;
+        const validationCheck = utils.monumentValidation(request.payload);
 
-        const monument = await Monument.findById(request.params.id);
+        if (!validationCheck.error) {
 
+          const successSanitisationCheck = utils.monumentInputSanitization(request.payload);
 
-        let monumentId = monument._id;
+          if (successSanitisationCheck) {
 
-        let categories = request.payload.category;
+            const monumentEdit = request.payload;
 
-        const image = await monumentEdit.imageUpload;
-
-
-
-
-        let allPriorImagesRemoved = undefined;
-        if (monument.images.length > 0 && image.length === undefined) {
-
-            allPriorImagesRemoved = true;
-
-
-        }
-        let imageResult = undefined;
-
-        if (image !== "") {
-
-          //If user has provided new input in images file, new image documents are created
-          imageResult = await ImageFunctionality.editMonumentImages(image, allPriorImagesRemoved);
-
-
-        }
-
-
-
-
-        //Removing existing categories (to ensure any previous categories that are no longer checked are up to date)
-        await CategoryFunctionality.pullPriorMonumentIds(monumentId);
-
-        //Pushing monument id to province category (as user may have changed the province on the form)
-        await CategoryFunctionality.editMonumentProvince(request.payload.province, monumentId);
-
-        //Obtaining other category mongodb document ids (if user has selected additional categorisation to province)
-        let newOtherCategoryIds = await CategoryFunctionality.editMonumentAdditionalCategories(categories, monument._id);
-
-
-        monument.title = monumentEdit.title;
-        monument.description = monumentEdit.description;
-        //NEED TO UPDATE CATEGORY PROVINCE HERE
-        monument.province = monumentEdit.province;
-        monument.county = monumentEdit.county;
-        //monument.user = monumentEdit._id;
-
-        //If imageResult.imageIds array length is greater than 0, set monument images field to newly created image ids
-        if (imageResult) {
-          if (imageResult.imageIds.length > 0) {
-            monument.images = imageResult.imageIds;
-          }
-        }
-
-
-        //Appending record province category id to monument categories array
-        monument.categories = [monument.categories[0]];
-        monument.coordinates.latitude = monumentEdit.latitude;
-        monument.coordinates.longitude = monumentEdit.longitude;
-
-        //If user has selected other categories for monument, these are appended to the monument categories array
-        if (newOtherCategoryIds.length > 0) {
-          for (let id in newOtherCategoryIds) {
-            if (!monument.categories.includes(newOtherCategoryIds[id])) {
-              monument.categories.push(newOtherCategoryIds[id]);
+            if (sanitizeHtml(request.params.id)) {
+              monument = await Monument.findById(sanitizeHtml(request.params.id));
             }
+
+            let monumentId = monument._id;
+
+            let categories = successSanitisationCheck.category;
+
+            const image = await request.payload.imageUpload;
+
+            let allPriorImagesRemoved = undefined;
+            if (monument.images.length > 0 && image.length === undefined) {
+              allPriorImagesRemoved = true;
+            }
+            let imageResult = undefined;
+
+            if (image !== "") {
+
+              //If user has provided new input in images file, new image documents are created
+              imageResult = await ImageFunctionality.editMonumentImages(image, allPriorImagesRemoved);
+
+
+            }
+
+
+            //Removing existing categories (to ensure any previous categories that are no longer checked are up to date)
+            await CategoryFunctionality.pullPriorMonumentIds(monumentId);
+
+            //Pushing monument id to province category (as user may have changed the province on the form)
+            await CategoryFunctionality.editMonumentProvince(successSanitisationCheck.province, monumentId);
+
+            //Obtaining other category mongodb document ids (if user has selected additional categorisation to province)
+            let newOtherCategoryIds = await CategoryFunctionality.editMonumentAdditionalCategories(categories, monument._id);
+
+
+
+
+            monument.title = monumentEdit.title;
+            monument.description = monumentEdit.description;
+            //NEED TO UPDATE CATEGORY PROVINCE HERE
+            monument.province = monumentEdit.province;
+            monument.county = monumentEdit.county;
+            //monument.user = monumentEdit._id;
+
+            //If imageResult.imageIds array length is greater than 0, set monument images field to newly created image ids
+            if (imageResult) {
+              if (imageResult.imageIds.length > 0) {
+                monument.images = imageResult.imageIds;
+              }
+            }
+
+
+            //Appending record province category id to monument categories array
+            monument.categories = [monument.categories[0]];
+            monument.coordinates.latitude = monumentEdit.latitude;
+            monument.coordinates.longitude = monumentEdit.longitude;
+
+            //If user has selected other categories for monument, these are appended to the monument categories array
+            if (newOtherCategoryIds.length > 0) {
+              for (let id in newOtherCategoryIds) {
+                if (!monument.categories.includes(newOtherCategoryIds[id])) {
+                  monument.categories.push(newOtherCategoryIds[id]);
+                }
+              }
+            }
+
+            await monument.save();
+
+            //Ensuring that each image document associated with this monument has monument field set to correct monument document id
+            if (imageResult) {
+              await ImageFunctionality.addMonumentIdToImageRecords(imageResult.imageTitles, monument._id);
+            }
+
+            if (monument) {
+
+              return h.response(monument).code(201);
+            }
+            return h.response().code(400);
+
+
+            if (sanitizeHtml(request.params.id)) {
+              updatedMonument = await Monument.updateOne({ _id: sanitizeHtml(request.params.id) }, request.payload);
+            }
+
+            if (!updatedMonument) {
+              return h.response().code(404);
+            }
+
+            return updatedMonument;
+
+
           }
+
         }
 
-        await monument.save();
 
-        //Ensuring that each image document associated with this monument has monument field set to correct monument document id
-        if (imageResult) {
-          await ImageFunctionality.addMonumentIdToImageRecords(imageResult.imageTitles, monument._id);
-        }
-
-        if (monument) {
-
-          return h.response(monument).code(201);
-        }
-        return Boom.badImplementation("error creating monument");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        const updatedMonument = await Monument.updateOne({ _id: request.params.id }, request.payload);
-        if (!updatedMonument) {
-          return Boom.notFound("No monument with this id");
-        }
-
-        return updatedMonument;
       } catch (err) {
-        return Boom.notFound("No monument with this id");
+        return h.response().code(404);
       }
 
     }
@@ -442,11 +439,15 @@ const Monuments = {
       strategy: "jwt",
     },
     handler: async function(request, h) {
-      const response = await Monument.deleteOne({ _id: request.params.id });
+      let response;
+      if (sanitizeHtml(request.params.id)) {
+        response = await Monument.deleteOne({ _id: sanitizeHtml(request.params.id) });
+      }
+
       if (response.deletedCount == 1) {
         return { success: true };
       }
-      return Boom.notFound('id not found');
+      return h.request().code(404);
     }
   },
   // addMonumentImages: {

@@ -142,8 +142,6 @@ const Monuments = {
     handler: async function (request, h) {
       const data = request.payload;
 
-      console.log(data);
-
       //categories variable contains value from request.payload.category
       let categories = request.payload.category;
 
