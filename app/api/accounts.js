@@ -73,37 +73,19 @@ const Users = {
       let user;
 
       try {
-        const schema = Joi.object({
-          firstName: Joi.string().required(),
-          lastName: Joi.string().required(),
-          email: Joi.string().email().required(),
-          password: Joi.string().required().min(5),
-          userType: Joi.string().regex(/User|Admin/)
-        });
-        let schemaValidation = schema.validate({
-          firstName: request.payload.firstName,
-          lastName: request.payload.lastName,
-          email: request.payload.email,
-          password: request.payload.password,
-          userType: request.payload.userType
-        });
+        const validationCheck = utils.validate(request.payload);
 
 
-        if (!schemaValidation.error) {
-          if (sanitizeHtml(request.payload.firstName) && sanitizeHtml(request.payload.lastName) &&  sanitizeHtml(request.payload.email) && sanitizeHtml(request.payload.password)  &&  sanitizeHtml(request.payload.userType)) {
+        if (!validationCheck.error) {
+          const successSanitisationCheck = utils.accountInputSanitization(request.payload);
+          if (successSanitisationCheck) {
             let checkEmailInUse = await User.findByEmail(email);
 
             if (checkEmailInUse) {
               return h.response().code(409);
             }
 
-            newUser = new User({
-              firstName: sanitizeHtml(request.payload.firstName),
-              lastName: sanitizeHtml(request.payload.lastName),
-              email: sanitizeHtml(request.payload.email),
-              password: sanitizeHtml(request.payload.password),
-              userType: sanitizeHtml(request.payload.userType)
-            });
+            newUser = new User(successSanitisationCheck);
 
             user = await newUser.save();
           }
