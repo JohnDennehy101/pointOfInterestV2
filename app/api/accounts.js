@@ -3,13 +3,28 @@
 const User = require('../models/user');
 const Boom = require("@hapi/boom");
 const utils = require('./utils.js');
+const sanitizeHtml = require("sanitize-html");
+const Joi = require("@hapi/joi");
 
 const Users = {
   authenticate: {
     auth: false,
     handler: async function (request, h) {
+      const schema = Joi.object({
+        email: Joi.string().email().required(),
+        password: Joi.string().required().min(5)
+      });
+      let schemaValidation = schema.validate({
+        email: request.payload.email,
+        password: request.payload.password
+      });
+
+      let user;
       try {
-        const user = await User.findOne({ email: request.payload.email });
+        if (sanitizeHtml(request.payload.email) && sanitizeHtml(request.payload.password) && !schemaValidation.error) {
+          user = await User.findOne({ email: sanitizeHtml(request.payload.email.trim()) });
+        }
+
         if (!user) {
           return Boom.unauthorized("User not found");
         } else if (user.password !== request.payload.password) {
