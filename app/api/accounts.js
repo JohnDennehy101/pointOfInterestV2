@@ -109,15 +109,23 @@ const Users = {
       strategy: "jwt",
     },
     handler: async function (request, h) {
-
+      let updatedUser;
       try {
-        const updatedUser = await User.updateOne({ _id: request.params.id }, request.payload);
+        const validationCheck = utils.validate(request.payload);
+        if (!validationCheck.error) {
+          const successSanitisationCheck = utils.accountInputSanitization(request.payload);
+          if (successSanitisationCheck) {
+            updatedUser = await User.updateOne({ _id: request.params.id }, successSanitisationCheck);
+          }
+          }
+
+
         if (!updatedUser) {
-          return Boom.notFound("No User with this id");
+          return h.response().code(400);
         }
         return updatedUser;
       } catch (err) {
-        return Boom.notFound("No User with this id");
+        return h.response().code(400);
       }
 
     }
