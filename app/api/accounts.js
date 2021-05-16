@@ -69,25 +69,54 @@ const Users = {
     auth: false,
     handler: async function (request, h) {
       const email = request.payload.email;
+      let newUser;
+      let user;
 
       try {
-        // let checkEmailInUse = await User.findByEmail(email);
-        // console.log(checkEmailInUse);
-        // if (checkEmailInUse) {
-        //   const message = "Email address already in use";
-        //   throw Boom.unauthorized(message);
-        // }
+        const schema = Joi.object({
+          firstName: Joi.string().required(),
+          lastName: Joi.string().required(),
+          email: Joi.string().email().required(),
+          password: Joi.string().required().min(5),
+          userType: Joi.string().regex(/User|Admin/)
+        });
+        let schemaValidation = schema.validate({
+          firstName: request.payload.firstName,
+          lastName: request.payload.lastName,
+          email: request.payload.email,
+          password: request.payload.password,
+          userType: request.payload.userType
+        });
 
-        const newUser = new User(request.payload);
-        const user = await newUser.save();
+
+        if (!schemaValidation.error) {
+          if (sanitizeHtml(request.payload.firstName) && sanitizeHtml(request.payload.lastName) &&  sanitizeHtml(request.payload.email) && sanitizeHtml(request.payload.password)  &&  sanitizeHtml(request.payload.userType)) {
+            let checkEmailInUse = await User.findByEmail(email);
+
+            if (checkEmailInUse) {
+              return h.response().code(409);
+            }
+
+            newUser = new User({
+              firstName: sanitizeHtml(request.payload.firstName),
+              lastName: sanitizeHtml(request.payload.lastName),
+              email: sanitizeHtml(request.payload.email),
+              password: sanitizeHtml(request.payload.password),
+              userType: sanitizeHtml(request.payload.userType)
+            });
+
+            user = await newUser.save();
+          }
+        }
+
         if (user) {
           return h.response(user).code(201);
         }
-        return Boom.badImplementation("error creating user");
+        return h.response().code(400);
 
       }
       catch (err) {
-        return Boom.badImplementation("error creating user");
+        return h.response().code(400);
       }
 
     },
