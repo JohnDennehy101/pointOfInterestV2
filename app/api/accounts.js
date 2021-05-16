@@ -52,34 +52,40 @@ const Users = {
        strategy: "jwt",
      },
     handler: async function (request, h) {
+       let decodedUserToken;
       try {
-        const decodedUserToken = await utils.decodeToken(request.params.id);
+        if (sanitizeHtml(request.params.id)) {
+          decodedUserToken = await utils.decodeToken(request.params.id);
+        }
+        else {
+          return h.response().code(404);
+        }
+
         let userId = decodedUserToken.userId.replace(/"/g, "");
         const user = await User.findOne({ _id: userId });
         if (!user) {
-          return Boom.notFound("No User with this id");
+          return h.response().code(404);
         }
         return user;
       } catch (err) {
-        return Boom.notFound("No User with this id");
+        return h.response().code(404);
       }
     },
   },
   create: {
     auth: false,
     handler: async function (request, h) {
-      const email = request.payload.email;
       let newUser;
       let user;
 
       try {
-        const validationCheck = utils.validate(request.payload);
+        const validationCheck = utils.accountValidation(request.payload);
 
 
         if (!validationCheck.error) {
           const successSanitisationCheck = utils.accountInputSanitization(request.payload);
           if (successSanitisationCheck) {
-            let checkEmailInUse = await User.findByEmail(email);
+            let checkEmailInUse = await User.findByEmail(successSanitisationCheck.email);
 
             if (checkEmailInUse) {
               return h.response().code(409);

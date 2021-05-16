@@ -7,6 +7,9 @@ const CategoryFunctionality = require('../utils/categoryFunctionality');
 const WeatherFunctionality = require('../utils/weatherFunctionality');
 const fs = require("fs");
 const Boom = require("@hapi/boom");
+const sanitizeHtml = require("sanitize-html");
+const Joi = require("@hapi/joi");
+const utils = require('./utils.js');
 
 
 const Monuments = {
@@ -19,27 +22,24 @@ const Monuments = {
       return monuments;
     },
   },
-  // test: {
-  //   auth: {
-  //     strategy: "jwt",
-  //   },
-  //   handler: async function(request,h) {
-  //
-  //   }
-  // },
+
   findOne: {
     auth: {
       strategy: "jwt",
     },
     handler: async function (request, h) {
+      let monument;
       try {
-        const monument = await Monument.findOne({ _id: request.params.id }).populate("user").populate("images").populate("categories").lean();
+        if (sanitizeHtml(request.params.id)) {
+          monument = await Monument.findOne({ _id: sanitizeHtml(request.params.id) }).populate("user").populate("images").populate("categories").lean();
+        }
+
         if (!monument) {
-          return Boom.notFound("No monument with this id");
+          return h.response().code(404);
         }
         return monument;
       } catch (err) {
-        return Boom.notFound("No monument with this id");
+        return h.response().code(404);
       }
     },
   },
@@ -64,11 +64,14 @@ const Monuments = {
       strategy: "jwt",
     },
    handler: async function (request, h) {
+      let monument;
      try {
-       const monument = await Monument.findOne({_id: request.params.id});
+       if (sanitizeHtml(request.params.id)) {
+         monument = await Monument.findOne({ _id: sanitizeHtml(request.params.id) });
+       }
 
        if (!monument) {
-         return Boom.notFound("No monument with this id");
+         return h.response().code(404);
        }
 
        const monumentImageObjectIds = monument.images;
@@ -90,7 +93,7 @@ const Monuments = {
            return imageJsonResponse;
        }
      } catch (err) {
-       return Boom.notFound("No monument with this id")
+       return h.response().code(404);
      }
    }
   },
@@ -100,7 +103,14 @@ const Monuments = {
       strategy: 'jwt',
     },
     handler: async function (request, h) {
-      const monument = await Monument.findOne({ _id: request.params.id });
+      let monument;
+      if (sanitizeHtml(request.params.id)) {
+        monument = await Monument.findOne({ _id: sanitizeHtml(request.params.id) });
+      }
+      else {
+        return h.response().code(404);
+      }
+
       let weatherApiResponse = await WeatherFunctionality.getWeatherDetails(monument);
 
       //Wrangle api response to return values in format that will be consumed by view monument view
@@ -132,72 +142,90 @@ const Monuments = {
       multipart: true,
     },
     handler: async function (request, h) {
-      //image variable contains value from image input field
-      const data = await request.payload;
-      const image = await request.payload.imageUpload;
-      //categories variable contains value from request.payload.category
-      let categories = request.payload.category;
+      const validationCheck = utils.monumentValidation(request.payload);
 
-      //Wrangle request payload to create cloudinary images, add image documents in mongodb and return image document ids and titles
-      let imageResult = await ImageFunctionality.addMonumentImages(image, data);
-      const newMonument = new Monument({
-        title: request.payload.title,
-        description: request.payload.description,
-        //user: user._id,
-        categories: [],
-        images: imageResult.imageIds,
-        province: request.payload.province,
-        county: request.payload.county,
-        coordinates: { latitude: request.payload.latitude, longitude: request.payload.longitude },
-      });
+      if (!validationCheck.error) {
 
-      await newMonument.save();
+        const successSanitisationCheck = utils.monumentInputSanitization(request.payload);
 
-      if (request.payload.test) {
-        return {
-          newMonument: newMonument,
-          imageResult: imageResult
+        if (successSanitisationCheck) {
+
+          //image variable contains value from image input field
+          const data = await successSanitisationCheck;
+          const image = request.payload.imageUpload;
+          //categories variable contains value from request.payload.category
+          let categories = successSanitisationCheck.category;
+
+          //Wrangle request payload to create cloudinary images, add image documents in mongodb and return image document ids and titles
+          let imageResult = await ImageFunctionality.addMonumentImages(image, request.payload);
+          const newMonument = new Monument({
+            title: successSanitisationCheck.title,
+            description: successSanitisationCheck.description,
+            //user: user._id,
+            categories: [],
+            images: imageResult.imageIds,
+            province: successSanitisationCheck.province,
+            county: successSanitisationCheck.county,
+            coordinates: { latitude: successSanitisationCheck.latitude, longitude: successSanitisationCheck.longitude},
+          });
+
+          await newMonument.save();
+
+          if (request.payload.test) {
+            return {
+              newMonument: newMonument,
+              imageResult: imageResult
+            }
+          }
+
+
+          //Adding province category (if province category does not exist, new one created and monument Id added).
+          //If province category already exists, monument id is appended to existing province category
+          let provinceCategoryId = await CategoryFunctionality.addMonumentProvinceCategory(
+            successSanitisationCheck.province,
+            newMonument
+          );
+
+          //Adding province category document id to new monument categories array (which was empty on creation)
+          newMonument.categories.push(provinceCategoryId);
+
+
+          let monumentId = newMonument._id;
+          await newMonument.save();
+
+          //Additional categories check (if user has checked a category on monument creation or added a new category and checked it).
+          //Adding other categories (if relevant other category does not exist, new one created and monument Id added).
+          //If other category already exists, monument id is appended to existing category
+          let otherCategoryIds = await CategoryFunctionality.addMonumentAdditionalCategories(categories, monumentId);
+
+          //If the length of otherCategoryIds is greater than 0, user did select other categories for monument.
+          //Programme loops through each, appending each category document id to the monument categories array (adding to the province category id that was already added above)
+          if (otherCategoryIds.length > 0) {
+            for (let id in otherCategoryIds) {
+              newMonument.categories.push(otherCategoryIds[id]);
+            }
+
+            await newMonument.save();
+          }
+
+
+          const monument = await newMonument.save();
+          //Set monument field on each image document associated with newly created monument.
+          await ImageFunctionality.addMonumentIdToImageRecords(imageResult.imageTitles, monumentId);
+          if (monument) {
+            return h.response(monument).code(201);
+          }
         }
-      }
 
-
-      //Adding province category (if province category does not exist, new one created and monument Id added).
-      //If province category already exists, monument id is appended to existing province category
-      let provinceCategoryId = await CategoryFunctionality.addMonumentProvinceCategory(
-        request.payload.province,
-        newMonument
-      );
-
-      //Adding province category document id to new monument categories array (which was empty on creation)
-      newMonument.categories.push(provinceCategoryId);
-
-
-      let monumentId = newMonument._id;
-      await newMonument.save();
-
-      //Additional categories check (if user has checked a category on monument creation or added a new category and checked it).
-      //Adding other categories (if relevant other category does not exist, new one created and monument Id added).
-      //If other category already exists, monument id is appended to existing category
-      let otherCategoryIds = await CategoryFunctionality.addMonumentAdditionalCategories(categories, monumentId);
-
-      //If the length of otherCategoryIds is greater than 0, user did select other categories for monument.
-      //Programme loops through each, appending each category document id to the monument categories array (adding to the province category id that was already added above)
-      if (otherCategoryIds.length > 0) {
-        for (let id in otherCategoryIds) {
-          newMonument.categories.push(otherCategoryIds[id]);
+        else {
+          return h.response().code(400);
         }
 
-        await newMonument.save();
       }
 
 
-      const monument = await newMonument.save();
-      //Set monument field on each image document associated with newly created monument.
-      await ImageFunctionality.addMonumentIdToImageRecords(imageResult.imageTitles, monumentId);
-      if (monument) {
-        return h.response(monument).code(201);
-      }
-      return Boom.badImplementation("error creating monument");
+
+      return h.response().code(400);
     },
   },
   edit: {

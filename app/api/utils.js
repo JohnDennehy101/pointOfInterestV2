@@ -42,7 +42,68 @@ exports.accountValidation = function(payload) {
     return true;
   }
   return false;
+};
+
+exports.monumentValidation = function(payload) {
+  const schema = Joi.object({
+   title: Joi.string().required(),
+    description: Joi.string().required(),
+    imageUpload: Joi.any(),
+    province: Joi.string().required(),
+    county: Joi.string().required(),
+    category: Joi.any(),
+    latitude: Joi.number().required(),
+    longitude: Joi.number().required(),
+  });
+  let schemaValidation = schema.validate({
+    title: payload.title,
+    description: payload.description,
+    imageUpload: payload.imageUpload,
+    province: payload.province,
+    county: payload.county,
+    category: payload.category,
+    latitude: payload.latitude,
+    longitude: payload.longitude,
+  });
+
+  if (schemaValidation) {
+    return true;
+  }
+  return false;
 }
+
+exports.monumentInputSanitization = function(payload) {
+  let categories = [];
+  let images = [];
+  if (sanitizeHtml(payload.title) && sanitizeHtml(payload.description)  &&  sanitizeHtml(payload.province) &&  sanitizeHtml(payload.county) && sanitizeHtml(payload.longitude) && sanitizeHtml(payload.latitude)) {
+    console.log(sanitizeHtml(payload.title));
+
+    if (payload.category) {
+    categories = sanitizeHtml(payload.category)
+    }
+
+    if (payload.imageUpload) {
+      images = sanitizeHtml(payload.imageUpload);
+    }
+
+    return {
+
+      title: sanitizeHtml(payload.title),
+      description: sanitizeHtml(payload.description),
+      category: categories,
+      imageUpload: images,
+      province: sanitizeHtml(payload.province),
+      county: sanitizeHtml(payload.county),
+        latitude: sanitizeHtml(payload.latitude),
+        longitude: sanitizeHtml(payload.longitude)
+    }
+  }
+  else {
+    return false;
+  }
+}
+
+
 
 exports.accountInputSanitization = function(payload) {
   if (sanitizeHtml(payload.firstName) && sanitizeHtml(payload.lastName) &&  sanitizeHtml(payload.email) && sanitizeHtml(payload.password)  &&  sanitizeHtml(payload.userType)) {
