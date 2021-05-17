@@ -2,26 +2,33 @@
 
 const assert = require("chai").assert;
 const MonumentService = require("./monument-service");
+const AccountService = require("./account-service");
 const monumentTestData = require("./monuments-test-data.json");
 const ImageFunctionality = require('../app/utils/imageFunctionality');
 const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const dotEnvPath = path.resolve('./.env');
+const fixtures = require("./accounts-test-data.json");
 
 
 require('dotenv').config({ path: dotEnvPath});
 
 suite("Monument API tests", function () {
+  let newUser = fixtures.newUser;
 
   let monuments = monumentTestData.monuments;
   let newMonument = monumentTestData.newMonument;
 
 
-  const monumentService = new MonumentService("http://localhost:3000");
+  const accountService = new AccountService("http://JD-2.local:4000");
+
+  const monumentService = new MonumentService("http://JD-2.local:4000");
 
   setup(async function () {
     await monumentService.deleteAllMonuments();
+    const returnedUser = await accountService.createUser(newUser);
+    const response = await accountService.authenticate(newUser);
   });
 
   teardown(async function () {

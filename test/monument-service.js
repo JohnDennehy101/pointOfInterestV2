@@ -4,7 +4,7 @@ const axios = require("axios");
 let FormData = require('form-data');
 const path = require('path');
 const fs = require('fs');
-const baseUrl = "http://localhost:3000";
+const baseUrl = "http://localhost:4000";
 
 class MonumentService {
   constructor(baseUrl) {
@@ -79,19 +79,26 @@ class MonumentService {
 
 
   async createMonumentWithoutImages(newMonument) {
+
+    console.log(newMonument);
     let requestFormData = new FormData();
     requestFormData.append('title', String(newMonument.title));
     requestFormData.append('description', String(newMonument.description));
-    requestFormData.append('latitude', newMonument.coordinates.latitude);
-    requestFormData.append('longitude', newMonument.coordinates.longitude);
+    requestFormData.append('latitude', newMonument.latitude);
+    requestFormData.append('longitude', newMonument.longitude);
     requestFormData.append('county', String(newMonument.county));
     requestFormData.append('province', String(newMonument.province));
     requestFormData.append('test', 'true');
     requestFormData.append('imageUpload',  '');
+    requestFormData.append('category', '');
 
-    const response = await axios.post(this.baseUrl + "/api/monuments", requestFormData,  {
+    console.log(requestFormData);
+
+    const response = await axios.post(this.baseUrl + "/api/monuments", requestFormData, {
       headers: requestFormData.getHeaders()
     });
+
+    console.log(response);
 
     return response.data;
   }

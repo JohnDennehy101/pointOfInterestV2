@@ -61,7 +61,7 @@ const Users = {
           return h.response().code(404);
         }
 
-        let userId = decodedUserToken.userId.replace(/"/g, "");
+        let userId = decodedUserToken.userId;
         const user = await User.findOne({ _id: userId });
         if (!user) {
           return h.response().code(404);

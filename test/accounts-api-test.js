@@ -3,34 +3,31 @@
 const assert = require("chai").assert;
 const AccountService = require("./account-service");
 const fixtures = require("./accounts-test-data.json");
+const utils = require("../app/api/utils.js");
 const _ = require('lodash');
 const axios = require('axios');
-
+const accountService = new AccountService("http://JD-2.local:4000");
 suite("Account API tests", function () {
   let users = fixtures.users;
   let newUser = fixtures.newUser;
-
-  const accountService = new AccountService("http://localhost:4000");
-
-  // setup(async function () {
-  //   await accountService.deleteAllUsers();
-  // });
 
   suiteSetup(async function () {
     this.timeout(35000);
     await accountService.deleteAllUsers();
     const returnedUser = await accountService.createUser(newUser);
     const response = await accountService.authenticate(newUser);
+    console.log(response);
   });
 
   suiteTeardown(async function () {
     this.timeout(35000);
     await accountService.deleteAllUsers();
-    accountService.clearAuth();
+    await accountService.clearAuth();
   })
 
   // setup(async function () {
   //   await accountService.deleteAllUsers();
+  //
   // });
   //
   // teardown(async function () {
@@ -40,7 +37,8 @@ suite("Account API tests", function () {
   test("get all users", async function () {
     this.timeout(35000);
     for (let c of users) {
-      await accountService.createUser(c);
+      let test = await accountService.createUser(c);
+      console.log(test);
     }
 
     const allUsers = await accountService.getUsers();
@@ -49,8 +47,21 @@ suite("Account API tests", function () {
 
 
   test("get user", async function () {
-    const c1 = await accountService.createUser(newUser);
-    const c2 = await accountService.getUser(c1._id);
+    let editedEmailNewUser = {
+      ...newUser,
+      email: "test134@gmail.com",
+      password: "abcdefghd"
+    }
+    const c1 = await accountService.createUser(editedEmailNewUser);
+    console.log(c1);
+    let userTest = {
+      email: c1.email,
+      _id: c1._id
+    }
+    const userForAuth = utils.createToken(userTest);
+    console.log(userForAuth);
+    const c2 = await accountService.getUser(userForAuth);
+    console.log(c2);
     assert.deepEqual(c1, c2);
   });
 
@@ -92,13 +103,23 @@ suite("Account API tests", function () {
   });
 
   test("create a user", async function () {
-    const returnedUser = await accountService.createUser(newUser);
-    assert(_.some([returnedUser], newUser), "returnedUser must be a superset of newUser");
+    let editedNewUser = {
+      ...newUser,
+      email: "babababa@gmail.com",
+    }
+    const returnedUser = await accountService.createUser(editedNewUser);
+    console.log(returnedUser);
+    console.log(newUser);
+    assert(_.some([returnedUser], editedNewUser), "returnedUser must be a superset of newUser");
     assert.isDefined(returnedUser._id);
   });
 
   test("fully edit a user", async function() {
-    const returnedUser = await accountService.createUser(newUser);
+    let editedNewUser = {
+      ...newUser,
+      email: "cacacacaca@gmail.com",
+    }
+    const returnedUser = await accountService.createUser(editedNewUser);
     let editedUser = returnedUser;
     editedUser['firstName'] = 'First Name'
     editedUser['lastName'] = 'Last Name'
@@ -106,7 +127,13 @@ suite("Account API tests", function () {
     assert.isDefined(afterEditUser);
     assert.equal(1, afterEditUser.nModified);
 
-    const updatedUser = await accountService.getUser(returnedUser._id);
+    let userTest = {
+      email: returnedUser.email,
+      _id: returnedUser._id
+    }
+    const userForAuth = utils.createToken(userTest);
+
+    const updatedUser = await accountService.getUser(userForAuth);
     assert.equal(updatedUser['firstName'], 'First Name');
     assert.equal(updatedUser['lastName'], 'Last Name');
   })

@@ -54,6 +54,7 @@ exports.monumentValidation = function(payload) {
     category: Joi.any(),
     latitude: Joi.number().required(),
     longitude: Joi.number().required(),
+    test: Joi.any()
   });
   let schemaValidation = schema.validate({
     title: payload.title,

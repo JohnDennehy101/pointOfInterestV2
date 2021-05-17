@@ -1,7 +1,7 @@
 "use strict";
 
 const axios = require("axios");
-const baseUrl = "http://localhost:3000";
+const baseUrl = "http://localhost:4000";
 
 class AccountService {
   constructor(baseUrl) {
@@ -15,6 +15,7 @@ class AccountService {
 
   async getUser(id) {
     try {
+      console.log(id);
       const response = await axios.get(this.baseUrl + "/api/users/" + id);
       return response.data;
     } catch (e) {

@@ -1,25 +1,25 @@
 {
   "users": [
     {
-      "firstName": "John",
-      "lastName": "Dennehy",
-      "email": "johndennehy101@gmail.com",
-      "password": "jd",
+      "firstName": "Harry",
+      "lastName": "Kane",
+      "email": "harry@gmail.com",
+      "password": "LongPassword",
       "userType": "Admin"
     },
     {
-      "firstName": "Marge",
+      "firstName": "Lisa",
       "lastName": "Simpson",
-      "email": "marge@gmail.com",
-      "password": "test",
+      "email": "lisa@gmail.com",
+      "password": "testing",
       "userType": "User"
     }
   ],
   "newUser": {
-  "firstName": "Homer",
+  "firstName": "Bart",
   "lastName": "Simpson",
-  "email": "homer@gmail.com",
-  "password": "testing",
+  "email": "bart@gmail.com",
+  "password": "1345656544",
   "userType": "User"
   }
 }

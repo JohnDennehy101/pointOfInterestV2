@@ -3,10 +3,8 @@
     {
       "title": "Dublin Castle",
       "description": "Erected in the early thirteenth century on the site of a Viking settlement, Dublin Castle served for centuries as the headquarters of English, and later British, administration in Ireland. In 1922, following Ireland’s independence, Dublin Castle was handed over to the new Irish government. It is now a major government complex and a key tourist attraction",
-      "coordinates": {
-        "latitude": 6.543,
-        "longitude": 8.5432
-      },
+      "latitude": 6.543,
+      "longitude": 8.5432,
       "images": [],
       "categories": [],
       "province": "Leinster",
@@ -15,10 +13,8 @@
     {
       "title": "Mallow Castle",
       "description": "Lovely castle in Mallow.",
-      "coordinates": {
-        "latitude": 7.789,
-        "longitude": 6.343
-      },
+      "latitude": 7.789,
+      "longitude": 6.343,
       "images": [],
       "categories": [],
       "province": "Munster",
@@ -27,10 +23,8 @@
     {
       "title": "Donegal Castle",
       "description": "Donegal Castle (Irish: Caisleán Dhún na nGall) is a castle situated in the centre of Donegal Town in County Donegal in Ulster, Ireland. For most of the last two centuries, the majority of the buildings lay in ruins but the castle was almost fully restored in the early 1990s.The castle consists of a 15th-century rectangular keep with a later Jacobean style wing. The complex is sited on a bend in the River Eske, near the mouth of Donegal Bay, and is surrounded by a 17th-century boundary wall. There is a small gatehouse at its entrance mirroring the design of the keep. Most of the stonework was constructed from locally sourced limestone with some sandstone. The castle was the stronghold of the O'Donnell clan, Lords of Tír Conaill and one of the most powerful Gaelic families in Ireland from the 5th to the 16th centuries.",
-      "coordinates": {
-        "latitude": 9.543,
-        "longitude": 7.898
-      },
+      "latitude": 9.543,
+      "longitude": 7.898,
       "images": [],
       "categories": [],
       "province": "Ulster",
@@ -40,10 +34,8 @@
   "newMonument": {
     "title": "Customs House",
     "description": "Historic Building in Dublin. Significant fire during the War Of Independence burned many of the country's historical records.",
-    "coordinates": {
-      "latitude": -6.543,
-      "longitude": 2.653
-    },
+    "latitude": -6.543,
+    "longitude": 2.653,
     "images": [],
     "categories": [],
     "province": "Leinster",
