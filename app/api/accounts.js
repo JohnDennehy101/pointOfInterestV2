@@ -174,7 +174,9 @@ const Users = {
   },
 
   deleteAll: {
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       await User.remove({});
       return { success: true };

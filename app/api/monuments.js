@@ -142,21 +142,14 @@ const Monuments = {
       multipart: true,
     },
     handler: async function (request, h) {
-      console.log(request.payload);
-      console.log("HTTT")
+
       const validationCheck = utils.monumentValidation(request.payload);
 
-      console.log(validationCheck);
-
       if (!validationCheck.error) {
-
-        console.log("Getting past validation");
 
         const successSanitisationCheck = utils.monumentInputSanitization(request.payload);
 
         if (successSanitisationCheck) {
-
-          console.log("Getting past sanitisation");
 
           //image variable contains value from image input field
           const data = await successSanitisationCheck;
@@ -437,7 +430,9 @@ const Monuments = {
     // auth: {
     //   strategy: "jwt",
     // },
-    auth: false,
+    auth: {
+      strategy: "jwt",
+    },
     handler: async function (request, h) {
       await Monument.deleteMany({});
       return { success: true };
