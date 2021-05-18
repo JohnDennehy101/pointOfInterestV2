@@ -38,7 +38,7 @@ exports.accountValidation = function(payload) {
     userType: payload.userType
   });
 
-  if (schemaValidation) {
+  if (!schemaValidation.error) {
     return true;
   }
   return false;
@@ -66,7 +66,7 @@ exports.monumentValidation = function(payload) {
     longitude: payload.longitude,
   });
 
-  if (schemaValidation) {
+  if (!schemaValidation.error) {
     return true;
   }
   return false;
@@ -76,7 +76,6 @@ exports.monumentInputSanitization = function(payload) {
   let categories = [];
   let images = [];
   if (sanitizeHtml(payload.title) && sanitizeHtml(payload.description)  &&  sanitizeHtml(payload.province) &&  sanitizeHtml(payload.county) && sanitizeHtml(payload.longitude) && sanitizeHtml(payload.latitude)) {
-    console.log(sanitizeHtml(payload.title));
 
     if (payload.category) {
     categories = sanitizeHtml(payload.category)

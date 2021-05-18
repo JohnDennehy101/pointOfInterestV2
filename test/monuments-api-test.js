@@ -10,6 +10,7 @@ const path = require('path');
 const fs = require('fs');
 const dotEnvPath = path.resolve('./.env');
 const fixtures = require("./accounts-test-data.json");
+const utils = require("../app/api/utils.js");
 
 
 require('dotenv').config({ path: dotEnvPath});
@@ -91,6 +92,39 @@ suite("Monument API tests", function () {
     assert.equal(allMonuments.length, 0);
   });
 
+  test("valid monument payload passes schema check", async function () {
+    this.timeout(35000);
+    const validSchemaCheck = utils.monumentValidation(newMonument);
+    assert.equal(validSchemaCheck, true);
+  });
+
+  test("invalid monument payload fails schema check", async function () {
+    this.timeout(35000);
+    const invalidMonument = {
+      title: 4949494,
+      description: 30303030
+    }
+    const invalidSchemaCheck = utils.monumentValidation(invalidMonument);
+    assert.equal(invalidSchemaCheck, false);
+  });
+
+  test("Successful sanitization check for valid monument payload", async function () {
+    this.timeout(35000);
+    const validSanitizationCheck = utils.monumentInputSanitization(newMonument);
+    assert.equal(validSanitizationCheck.title, "Customs House");
+  });
+
+  test("Failed sanitization check for payload with script tag", async function () {
+    this.timeout(35000);
+    const invalidMonument = {
+      ...newMonument,
+      description: "<script>alert('test')</script>"
+    }
+    const invalidSanitizationCheck = utils.monumentInputSanitization(invalidMonument);
+    assert.equal(invalidSanitizationCheck, false);
+  });
+
+
   test("create a monument - without images", async function () {
     this.timeout(35000);
     const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
@@ -117,37 +151,37 @@ suite("Monument API tests", function () {
     assert.isDefined(returnedMonument._id);
   })
 
-  test("creation of Cloudinary image with MongoDB instance created", async function() {
-    this.timeout(35000);
-    const image = fs.readFileSync(path.join(__dirname, './testImages/castle.jpg'));
-    const imageObject = {
-      _data: image,
-      hapi: {
-        filename: "testImage1.jpg",
-      },
-      length: 1,
-    }
-
-    const dummyPayload = {
-      _data: image,
-      imageUpload: {
-        hapi: {
-          filename: "testImage1.jpg"
-        }
-      }
-    }
-    const cloudinaryConfig = {
-      cloud_name: "monuments",
-      api_key: process.env.cloudinary_api_key,
-      api_secret: process.env.cloudinary_api_secret,
-    }
-    let imageResult = await ImageFunctionality.addMonumentImages(imageObject, dummyPayload, cloudinaryConfig);
-
-    assert.isDefined(imageResult);
-    assert.equal(1, imageResult.imageIds.length);
-    assert.equal(1, imageResult.imageTitles.length);
-    assert.equal('testImage1.jpg', imageResult.imageTitles[0]);
-  })
+  // test("creation of Cloudinary image with MongoDB instance created", async function() {
+  //   this.timeout(35000);
+  //   const image = fs.readFileSync(path.join(__dirname, './testImages/castle.jpg'));
+  //   const imageObject = {
+  //     _data: image,
+  //     hapi: {
+  //       filename: "testImage1.jpg",
+  //     },
+  //     length: 1,
+  //   }
+  //
+  //   const dummyPayload = {
+  //     _data: image,
+  //     imageUpload: {
+  //       hapi: {
+  //         filename: "testImage1.jpg"
+  //       }
+  //     }
+  //   }
+  //   const cloudinaryConfig = {
+  //     cloud_name: "monuments",
+  //     api_key: process.env.cloudinary_api_key,
+  //     api_secret: process.env.cloudinary_api_secret,
+  //   }
+  //   let imageResult = await ImageFunctionality.addMonumentImages(imageObject, dummyPayload, cloudinaryConfig);
+  //
+  //   assert.isDefined(imageResult);
+  //   assert.equal(1, imageResult.imageIds.length);
+  //   assert.equal(1, imageResult.imageTitles.length);
+  //   assert.equal('testImage1.jpg', imageResult.imageTitles[0]);
+  // })
 
 
   test("fully edit a monument", async function() {

@@ -35,6 +35,44 @@ suite("Account API tests", function () {
   //   await accountService.deleteAllUsers();
   // });
 
+  test("valid user passes schema check", async function () {
+    this.timeout(35000);
+    const validSchemaCheck = utils.accountValidation(newUser);
+    assert.equal(validSchemaCheck, true);
+  });
+
+  test("invalid user fails schema check", async function () {
+    this.timeout(35000);
+    const invalidUser = {
+     firstName: "test",
+      lastName: "user"
+    }
+    const invalidSchemaCheck = utils.accountValidation(invalidUser);
+    assert.equal(invalidSchemaCheck, false);
+  });
+
+  test("Successful sanitization check for valid payload", async function () {
+    this.timeout(35000);
+    const validUser = {
+      ...newUser,
+      email: "vovovovov@gmail.com"
+    }
+    const validSanitizationCheck = utils.accountInputSanitization(validUser);
+    assert.equal(validSanitizationCheck.firstName, "Bart");
+  });
+
+  test("Failed sanitization check for payload with script tag", async function () {
+    this.timeout(35000);
+    const invalidUser = {
+      ...newUser,
+      email: "Kpj@gmail.com",
+      firstName: "<script>alert('test')</script>"
+    }
+    const invalidSanitizationCheck = utils.accountInputSanitization(invalidUser);
+    assert.equal(invalidSanitizationCheck, false);
+  });
+
+
   test("get all users", async function () {
     this.timeout(35000);
     for (let c of users) {

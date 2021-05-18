@@ -12,8 +12,14 @@ suite("Authentication API tests", function () {
   const accountService = new AccountService("http://localhost:4000");
 
   setup(async function () {
+    const returnedUser = await accountService.createUser(newUser);
+    const response = await accountService.authenticate(newUser);
     await accountService.deleteAllUsers();
   });
+  teardown(async function () {
+    await accountService.deleteAllUsers();
+    await accountService.clearAuth()
+  })
 
   test("authenticate", async function () {
     const returnedUser = await accountService.createUser(newUser);
