@@ -113,7 +113,7 @@ const ImageFunctionality = {
   //Add image documents for each new image passed in request on edit monument. If no image passed, default image is used.
   //Returns image document ids and image document titles (if user has edited images)
 
-  editMonumentImages: async function (image, apiCallNoImages = undefined) {
+  editMonumentImages: async function (image, apiCallNoImages = undefined, testCall = false) {
     let monumentImageUrlArray = [];
     let monumentImageTitleArray = [];
     let cloudinaryPromise, cloudinarySecureUrl;
@@ -167,17 +167,29 @@ const ImageFunctionality = {
 
 
       let cloudinarySecureUrlPromiseResolved = cloudinarySecureUrl;
+      let newImage;
 
-      let newImage = new Image({
-        title: imageFileName,
-        imageUrl: cloudinarySecureUrlPromiseResolved,
-      });
+      if (!testCall) {
 
-      await newImage.save();
+        newImage = new Image({
+          title: imageFileName,
+          imageUrl: cloudinarySecureUrlPromiseResolved,
+        });
+
+        await newImage.save();
+      }
+
+
+
+
       monumentImageUrlArray = [];
       monumentImageTitleArray = [];
-      monumentImageUrlArray.push(newImage._id);
-      monumentImageTitleArray.push(newImage.title);
+
+      if (!testCall) {
+        monumentImageUrlArray.push(newImage._id);
+        monumentImageTitleArray.push(newImage.title);
+      }
+
 
     }
 
