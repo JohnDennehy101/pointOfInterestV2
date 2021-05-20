@@ -58,6 +58,38 @@ suite("Monument API tests", function () {
     assert.equal(c1.title, c2.title);
   });
 
+  test("get all non-province categories", async function () {
+    this.timeout(35000);
+    // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+    const c1 = await monumentService.getMonumentCategories();
+    // const c2 = await monumentService.getMonument(c1._id);
+    assert.isDefined(c1)
+    assert.equal(c1.length, 1);
+  });
+
+  test("get image ids associated with a monument", async function () {
+    this.timeout(35000);
+    // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+    const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+    console.log(returnedMonument);
+    const c1 = await monumentService.getMonumentImages(returnedMonument._id);
+    // const c2 = await monumentService.getMonument(c1._id);
+    assert.isDefined(c1);
+    console.log(c1);
+    assert.equal(c1.images.length, 1);
+  });
+
+  test("get weather data for monument coordinates", async function () {
+    this.timeout(35000);
+    // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+    const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+    const c1 = await monumentService.getMonumentWeather(returnedMonument._id);
+    // const c2 = await monumentService.getMonument(c1._id);
+    assert.isDefined(c1);
+    assert.isDefined(c1.currentWeather);
+  });
+
+
   test("get invalid monument", async function () {
     this.timeout(35000);
     const c1 = await monumentService.getMonument("1234");

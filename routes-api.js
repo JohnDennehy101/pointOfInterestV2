@@ -19,7 +19,6 @@ module.exports = [
   // { method: 'PATCH', path: '/api/monuments/{id}/images', config: Monuments.addMonumentImages },
   { method: "POST", path: "/api/monuments", config: Monuments.create },
   { method: "PUT", path: "/api/monuments/{id}", config: Monuments.edit },
-  { method: "PATCH", path: "/api/monuments/{id}", config: Monuments.partiallyEdit },
   { method: "DELETE", path: "/api/monuments/{id}", config: Monuments.deleteOne },
   { method: "DELETE", path: "/api/monuments", config: Monuments.deleteAll },
 

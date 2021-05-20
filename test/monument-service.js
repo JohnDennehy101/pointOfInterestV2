@@ -34,6 +34,24 @@ class MonumentService {
     }
   }
 
+  async getMonumentCategories() {
+    try {
+      const response = await axios.get(this.baseUrl + "/api/monuments/categories");
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getMonumentWeather(id) {
+    try {
+      const response = await axios.get(this.baseUrl + "/api/monuments/" + id + "/weather");
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async fullyEditMonument(id, editedMonument) {
     try {
       let requestFormData = new FormData();

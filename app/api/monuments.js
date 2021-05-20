@@ -356,76 +356,7 @@ const Monuments = {
 
     }
   },
-  partiallyEdit: {
-    auth: {
-      strategy: "jwt",
-    },
-    handler: async function (request, h) {
-      try {
-        const allCounties = [ 'antrim',
-          'armagh',
-          'carlow',
-          'cavan',
-          'clare',
-          'cork',
-          'derry',
-          'donegal',
-          'down',
-          'dublin',
-          'fermanagh',
-          'galway',
-          'kerry',
-          'kildare',
-          'kilkenny',
-          'laois',
-          'leitrim',
-          'limerick',
-          'longford',
-          'louth',
-          'mayo',
-          'meath',
-          'monaghan',
-          'offaly',
-          'roscommon',
-          'sligo',
-          'tipperary',
-          'tyrone',
-          'waterford',
-          'westmeath',
-          'wexford',
-          'wicklow'];
-        const monument = await Monument.findOne({ _id: request.params.id });
-        if (!monument) {
-          return Boom.notFound("No monument with this id");
-        }
-        if (request.payload.title) {
-          monument.title = request.payload.title;
-        }
-        if (request.payload.description) {
-          monument.description = request.payload.description;
-        }
-        if (request.payload.county) {
-          if (allCounties.includes(request.payload.county.toLowerCase())) {
-            monument.county = request.payload.county;
-          }
 
-        }
-        if (request.payload.coordinates) {
-          if (Number(request.payload.coordinates.latitude)) {
-            monument.coordinates.latitude = request.payload.coordinates.latitude;
-          }
-          if (Number(request.payload.coordinates.longitude)) {
-            monument.coordinates.longitude = request.payload.coordinates.longitude;
-          }
-
-        }
-        await monument.save();
-        return monument;
-      } catch (err) {
-        return Boom.notFound("No Monument with this id");
-      }
-    }
-  },
   deleteAll: {
     // auth: {
     //   strategy: "jwt",

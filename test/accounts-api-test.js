@@ -1,15 +1,133 @@
 "use strict";
 
+var mocha = require('mocha')
 const assert = require("chai").assert;
 const AccountService = require("./account-service");
 const fixtures = require("./accounts-test-data.json");
 const utils = require("../app/api/utils.js");
 const _ = require('lodash');
 const axios = require('axios');
+var describe = mocha.describe
+var it = mocha.it
+var beforeEach = mocha.beforeEach
+const server = require("../index.js")
+var chai = require("chai");
+
+const chaiHttp = require("chai-http");
+
+chai.use(chaiHttp);
+
+var expect  = require("chai").expect;
+var request = require("request");
+
+
+describe('Todo API', function() {
+
+  it('should Register user, login user, check token and delete a todo on /todo/<id> DELETE', function(done) {
+    chai.request(server)
+
+      // register request
+      .post('/api/users/authenticate')
+
+      // send user registration details
+      .send({
+          'email': 'johndennehy101@gmail.com',
+          'password': 'testing'
+        }
+      ) // this is like sending $http.post or this.http.post in Angular
+      .end((err, res) => { // when we get a resonse from the endpoint
+
+        // in other words,
+        // the res object should have a status of 201
+        res.should.have.status(201);
+
+        // follow up with login
+        chai.request(server)
+          .get('/api/users')
+          // send user login details
+
+          .end((err, res) => {
+            console.log('this runs the login part');
+            console.log(res.body);
+            res.body.should.have.property('token');
+            //var token = res.body.token;
+
+          })
+      })
+  })
+
+})
+
+
+
+
+// describe("RGB to Hex conversion", function() {
+//   beforeEach(function(done) {
+//     request(url, {
+//       method: 'POST',
+//       form: {
+//         email: "johndennehy101@gmail.com", password: "testing"
+//       }
+//     })
+//     done();
+//   })
+//
+//   var url = "http://JD-2.local:4000/api/users/authenticate";
+//   var testUrl = "http://JD-2.local:4000/api/users";
+//
+//
+//
+//   it("returns status 201", function(done) {
+//     request(testUrl, {
+//       method: 'GET',
+//     }, function(error, response, body) {
+//       console.log(body);
+//       expect(response.statusCode).to.equal(201);
+//       expect(body.success).to.equal(true);
+//       done();
+//     });
+//   });
+//
+//
+//
+//   it("returns status 201", function(done) {
+//     request(url, {
+//       method: 'POST',
+//       form: {
+//         email: "johndennehy101@gmail.com", password: "testing"
+//       }
+//     }, function(error, response, body) {
+//       console.log(body["success"]);
+//       expect(response.statusCode).to.equal(201);
+//       expect(body.success).to.equal(true);
+//       done();
+//     });
+//   });
+//
+//   it("returns status 401", function(done) {
+//     request(url, {
+//       method: 'POST',
+//       form: {
+//         email: "jdf", password: "tes"
+//       }
+//     }, function(error, response, body) {
+//       console.log(body);
+//       expect(response.statusCode).to.equal(401);
+//       done();
+//     });
+//   });
+//
+// })
+
 const accountService = new AccountService("http://JD-2.local:4000");
 suite("Account API tests", function () {
   let users = fixtures.users;
   let newUser = fixtures.newUser;
+
+  // var chai = require('chai')
+  //   , chaiHttp = require('chai-http');
+  //
+  // chai.use(chaiHttp);
 
   suiteSetup(async function () {
     this.timeout(35000);
@@ -25,6 +143,11 @@ suite("Account API tests", function () {
     await accountService.deleteAllUsers();
     await accountService.clearAuth();
   })
+
+  // chai.request('http://JD-2.local:4000/api')
+  //   .get('/authenticate').send("ta").end(function (err, res) {
+  //   expect(res).to.be.null;
+  // })
 
   // setup(async function () {
   //   await accountService.deleteAllUsers();
