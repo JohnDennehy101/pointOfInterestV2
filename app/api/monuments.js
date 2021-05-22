@@ -332,15 +332,15 @@ const Monuments = {
             return h.response().code(400);
 
 
-            if (sanitizeHtml(request.params.id)) {
-              updatedMonument = await Monument.updateOne({ _id: sanitizeHtml(request.params.id) }, request.payload);
-            }
+            // if (sanitizeHtml(request.params.id)) {
+            //   updatedMonument = await Monument.updateOne({ _id: sanitizeHtml(request.params.id) }, request.payload);
+            // }
+            //
+            // if (!updatedMonument) {
+            //   return h.response().code(404);
+            // }
 
-            if (!updatedMonument) {
-              return h.response().code(404);
-            }
-
-            return updatedMonument;
+            // return h.response(updatedMonument).code(201);
 
 
           }
@@ -375,6 +375,7 @@ const Monuments = {
       let response;
       if (sanitizeHtml(request.params.id)) {
         response = await Monument.deleteOne({ _id: sanitizeHtml(request.params.id) });
+        await CategoryFunctionality.removeMonumentId(sanitizeHtml(request.params.id));
       }
 
       if (response.deletedCount == 1) {

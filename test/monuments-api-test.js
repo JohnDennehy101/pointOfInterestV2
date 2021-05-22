@@ -5,6 +5,7 @@ const MonumentService = require("./monument-service");
 const AccountService = require("./account-service");
 const monumentTestData = require("./monuments-test-data.json");
 const ImageFunctionality = require('../app/utils/imageFunctionality');
+const CategoryFunctionality = require("../app/utils/categoryFunctionality");
 const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
@@ -23,6 +24,7 @@ suite("Monument API tests", function () {
 
   let monuments = monumentTestData.monuments;
   let newMonument = monumentTestData.newMonument;
+  let invalidMonumentCoordinates = monumentTestData.invalidMonumentCoordinates;
 
 
   const accountService = new AccountService("http://JD-2.local:4000");
@@ -55,18 +57,14 @@ suite("Monument API tests", function () {
 
   test("get monument", async function () {
     this.timeout(35000);
-    // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
     const c1 = await monumentService.createMonumentWithoutImages(newMonument);
-    console.log(c1);
     const c2 = await monumentService.getMonument(c1._id);
     assert.equal(c1.title, c2.title);
   });
 
   test("get all non-province categories", async function () {
     this.timeout(35000);
-    // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
     const c1 = await monumentService.getMonumentCategories();
-    // const c2 = await monumentService.getMonument(c1._id);
     assert.isDefined(c1)
     assert.equal(c1.length, 1);
   });
@@ -77,36 +75,43 @@ suite("Monument API tests", function () {
     it("should wait", async () => {
       const c1 = await monumentService.createMonumentWithoutImages(newMonument);
       assert.isDefined(c1);
-      // console.log(c1);
       assert.equal(c1.images.length, 1);
     })
   });
 
-  // test("get image ids associated with a monument", async function () {
-  //   this.timeout(35000);
-  //   // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
-  //   const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-  //   // console.log(returnedMonument);
-  //   // const c1 = await monumentService.getMonumentImages(returnedMonument._id);
-  //   // const c2 = await monumentService.getMonument(c1._id);
-  //   // assert.isDefined(c1);
-  //   // console.log(c1);
-  //   // assert.equal(c1.images.length, 1);
-  //   assert.isDefined(returnedMonument);
-  //   // console.log(c1);
-  //   assert.equal(returnedMonument.images.length, 1);
-  // });
+  describe("get image url and title for images associated with monument", async function () {
+    this.timeout(35000);
+
+    it("should wait", async () => {
+      const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+      const c2 = await monumentService.getMonumentImages(c1._id)
+      assert.isDefined(c2);
+      assert.equal(c2.images[0].url, '/src/assets/pointOfInterestDefaultImage.png');
+      assert.equal(c2.numberOfResults, 1)
+    })
+  });
+
 
   describe("get weather data for monument coordinates", async function () {
     this.timeout(35000);
 
     it("should wait", async () => {
       const c1 = await monumentService.createMonumentWithoutImages(newMonument);
-      // const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-      // console.log(returnedMonument);
       const c2 = await monumentService.getMonumentWeather(c1._id);
       assert.isDefined(c2);
       assert.isDefined(c2.currentWeather);
+    })
+  });
+
+  describe("no weather data returned for invalid coordinates", async function () {
+    this.timeout(35000);
+
+    it("should wait", async () => {
+      const c1 = await monumentService.createMonumentWithoutImages(invalidMonumentCoordinates);
+      // const afterEditMonument = await monumentService.fullyEditMonument(c1._id, c1);
+      // console.log(afterEditMonument);
+      const c2 = await monumentService.getMonumentWeather(c1._id);
+      assert.equal(c2.weatherAvailable, false);
     })
   });
 
@@ -114,11 +119,7 @@ suite("Monument API tests", function () {
     this.timeout(35000);
 
     const c1 = await monumentService.createMonumentWithoutImages(newMonument);
-    // const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-    // console.log(returnedMonument);
     const c2 = await monumentService.getMonumentWeather(c1._id);
-    // const c2 = await monumentService.getMonument(c1._id);
-    console.log(c1);
     assert.isDefined(c2);
     assert.isDefined(c2.currentWeather);
   });
@@ -199,47 +200,6 @@ suite("Monument API tests", function () {
     assert.isDefined(returnedMonument._id);
   });
 
-
-  // describe("create a monument - with 1 image", async function () {
-  //   this.timeout(35000);
-  //   let returnedMonument;
-  //
-  //   it("should wait", async () => {
-  //
-  //     it ("should wait again", async () => {
-  //       returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-  //       console.log("reeeueueue")
-  //     })
-  //
-  //
-  //     console.log("returned monument");
-  //     console.log(returnedMonument);
-  //
-  //     assert.equal(returnedMonument.title, newMonument.title);
-  //     assert.equal(returnedMonument.description, newMonument.description);
-  //     assert.equal(returnedMonument.county, newMonument.county);
-  //     assert.equal(returnedMonument.province, newMonument.province);
-  //     assert.equal(returnedMonument.coordinates.latitude, newMonument.latitude);
-  //     assert.equal(returnedMonument.coordinates.longitude, newMonument.longitude);
-  //     assert.isDefined(returnedMonument._id);
-  //   })
-  // });
-
-  // test("create a monument - with 1 image", async function() {
-  //   this.timeout(35000);
-  //
-  //   const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-  //
-  //
-  //   assert.equal(returnedMonument.title, newMonument.title);
-  //   assert.equal(returnedMonument.description, newMonument.description);
-  //   assert.equal(returnedMonument.county, newMonument.county);
-  //   assert.equal(returnedMonument.province, newMonument.province);
-  //   assert.equal(returnedMonument.coordinates.latitude, newMonument.latitude);
-  //   assert.equal(returnedMonument.coordinates.longitude, newMonument.longitude);
-  //   assert.isDefined(returnedMonument._id);
-  // })
-
   test("Add image functionality", async function() {
     this.timeout(35000);
     const image = fs.readFileSync(path.join(__dirname, './testImages/castle.jpg'));
@@ -301,6 +261,36 @@ suite("Monument API tests", function () {
 
     })
   });
+
+  test("Invalid monument id does not edit record", async () => {
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
+
+    returnedMonument['title'] = 'New Title';
+    returnedMonument['description'] = 'new description';
+    returnedMonument['county'] = 'Antrim';
+    returnedMonument['province'] = 'Ulster';
+    returnedMonument['latitude'] = 2.5;
+    returnedMonument['longitude'] = 4.5;
+    returnedMonument['imageUpload'] = '';
+
+    const afterEditMonument = await monumentService.fullyEditMonument(1234455565, returnedMonument);
+    assert.equal(afterEditMonument, null);
+  })
+
+  test("create new monument category", async () => {
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
+    let category = await CategoryFunctionality.addMonumentAdditionalCategories(returnedMonument.categories, returnedMonument._id);
+    assert.isDefined(category);
+    assert.equal(category.length, 1);
+  })
+
+  test("create new monument categories", async () => {
+    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
+    returnedMonument.categories.push("Test");
+    let categories = await CategoryFunctionality.editMonumentAdditionalCategories(returnedMonument.categories, returnedMonument._id);
+    assert.isDefined(categories);
+    assert.equal(categories.length, 2);
+  })
 
   test("delete a monument", async function () {
     let c = await monumentService.createMonumentWithoutImages(newMonument);

@@ -40,5 +40,15 @@
     "categories": [],
     "province": "Leinster",
     "county": "Dublin"
+  },
+  "invalidMonumentCoordinates": {
+    "title": "Customs House",
+    "description": "Historic Building in Dublin. Significant fire during the War Of Independence burned many of the country's historical records.",
+    "latitude": 900,
+    "longitude": 2000,
+    "images": [],
+    "categories": [],
+    "province": "Leinster",
+    "county": "Dublin"
   }
 }

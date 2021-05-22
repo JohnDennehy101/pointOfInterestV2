@@ -21,113 +21,11 @@ var expect  = require("chai").expect;
 var request = require("request");
 
 
-// describe('Todo API', function() {
-//
-//   it('should Register user, login user, check token and delete a todo on /todo/<id> DELETE', function(done) {
-//     chai.request(server)
-//
-//       // register request
-//       .post('/api/users/authenticate')
-//
-//       // send user registration details
-//       .send({
-//           'email': 'johndennehy101@gmail.com',
-//           'password': 'testing'
-//         }
-//       ) // this is like sending $http.post or this.http.post in Angular
-//       .end((err, res) => { // when we get a resonse from the endpoint
-//
-//         // in other words,
-//         // the res object should have a status of 201
-//         res.should.have.status(201);
-//
-//         // follow up with login
-//         chai.request(server)
-//           .get('/api/users')
-//           // send user login details
-//
-//           .end((err, res) => {
-//             console.log('this runs the login part');
-//             console.log(res.body);
-//             res.body.should.have.property('token');
-//             //var token = res.body.token;
-//
-//           })
-//       })
-//   })
-//
-// })
-
-
-
-
-// describe("RGB to Hex conversion", function() {
-//   beforeEach(function(done) {
-//     request(url, {
-//       method: 'POST',
-//       form: {
-//         email: "johndennehy101@gmail.com", password: "testing"
-//       }
-//     })
-//     done();
-//   })
-//
-//   var url = "http://JD-2.local:4000/api/users/authenticate";
-//   var testUrl = "http://JD-2.local:4000/api/users";
-//
-//
-//
-//   it("returns status 201", function(done) {
-//     request(testUrl, {
-//       method: 'GET',
-//     }, function(error, response, body) {
-//       console.log(body);
-//       expect(response.statusCode).to.equal(201);
-//       expect(body.success).to.equal(true);
-//       done();
-//     });
-//   });
-//
-//
-//
-//   it("returns status 201", function(done) {
-//     request(url, {
-//       method: 'POST',
-//       form: {
-//         email: "johndennehy101@gmail.com", password: "testing"
-//       }
-//     }, function(error, response, body) {
-//       console.log(body["success"]);
-//       expect(response.statusCode).to.equal(201);
-//       expect(body.success).to.equal(true);
-//       done();
-//     });
-//   });
-//
-//   it("returns status 401", function(done) {
-//     request(url, {
-//       method: 'POST',
-//       form: {
-//         email: "jdf", password: "tes"
-//       }
-//     }, function(error, response, body) {
-//       console.log(body);
-//       expect(response.statusCode).to.equal(401);
-//       done();
-//     });
-//   });
-//
-// })
-
 const accountService = new AccountService("http://JD-2.local:4000");
 suite("Account API tests", function () {
   let users = fixtures.users;
   let newUser = fixtures.newUser;
 
-  // var chai = require('chai')
-  //   , chaiHttp = require('chai-http');
-  //
-  // chai.use(chaiHttp);
 
   suiteSetup(async function () {
     this.timeout(35000);
@@ -144,19 +42,7 @@ suite("Account API tests", function () {
     await accountService.clearAuth();
   })
 
-  // chai.request('http://JD-2.local:4000/api')
-  //   .get('/authenticate').send("ta").end(function (err, res) {
-  //   expect(res).to.be.null;
-  // })
 
-  // setup(async function () {
-  //   await accountService.deleteAllUsers();
-  //
-  // });
-  //
-  // teardown(async function () {
-  //   await accountService.deleteAllUsers();
-  // });
 
   test("valid user passes schema check", async function () {
     this.timeout(35000);
@@ -294,45 +180,6 @@ suite("Account API tests", function () {
     assert.equal(updatedUser['lastName'], 'Last Name');
   })
 
-  // test("patch user - firstName", async function() {
-  //   const returnedUser = await accountService.createUser(newUser);
-  //   const firstNameEdit = {firstName: 'John'};
-  //   const afterNameEdit = await accountService.editUserFirstName(returnedUser._id, firstNameEdit);
-  //   assert.isDefined(afterNameEdit);
-  //   assert.notEqual(returnedUser.firstName, afterNameEdit.firstName);
-  // })
-  //
-  // test("patch user - lastName", async function() {
-  //   const returnedUser = await accountService.createUser(newUser);
-  //   const lastNameEdit = {lastName: 'Dennehy'};
-  //   const afterNameEdit = await accountService.editUserLastName(returnedUser._id, lastNameEdit);
-  //   assert.isDefined(afterNameEdit);
-  //   assert.notEqual(returnedUser.lastName, afterNameEdit.lastName);
-  // })
-  //
-  // test("patch user - email", async function() {
-  //   const returnedUser = await accountService.createUser(newUser);
-  //   const emailEdit = {email: 'test123@gmail.com'};
-  //   const afterEmailEdit = await accountService.editUserEmail(returnedUser._id, emailEdit);
-  //   assert.isDefined(afterEmailEdit);
-  //   assert.notEqual(returnedUser.email, afterEmailEdit.email);
-  // })
-  //
-  // test("patch user - password", async function() {
-  //   const returnedUser = await accountService.createUser(newUser);
-  //   const passwordEdit = {password: 'password123'};
-  //   const afterPasswordEdit = await accountService.editUserPassword(returnedUser._id, passwordEdit);
-  //   assert.isDefined(afterPasswordEdit);
-  //   assert.notEqual(returnedUser.password, afterPasswordEdit.password);
-  // })
-  //
-  // test("patch user - user type", async function() {
-  //   const returnedUser = await accountService.createUser(newUser);
-  //   const userTypeEdit = {userType: 'Admin'};
-  //   const afterUserTypeEdit = await accountService.editUserType(returnedUser._id, userTypeEdit);
-  //   assert.isDefined(afterUserTypeEdit);
-  //   assert.notEqual(returnedUser.userType, afterUserTypeEdit.userType);
-  // })
 
 
 
