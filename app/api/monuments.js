@@ -242,7 +242,7 @@ const Monuments = {
       multipart: true,
     },
     handler: async function (request, h) {
-      let monument, updatedMonument;
+      let monument, updatedMonument, categories;
 
       try {
 
@@ -262,7 +262,12 @@ const Monuments = {
 
             let monumentId = monument._id;
 
-            let categories = successSanitisationCheck.category;
+            let categoriesString = successSanitisationCheck.category;
+
+            if (categoriesString.length > 0) {
+              categories = categoriesString.split(",");
+            }
+
 
             const image = await request.payload.imageUpload;
 
@@ -309,6 +314,7 @@ const Monuments = {
             monument.coordinates.latitude = monumentEdit.latitude;
             monument.coordinates.longitude = monumentEdit.longitude;
 
+            console.log(newOtherCategoryIds);
             //If user has selected other categories for monument, these are appended to the monument categories array
             if (newOtherCategoryIds.length > 0) {
               for (let id in newOtherCategoryIds) {
@@ -343,6 +349,9 @@ const Monuments = {
             // return h.response(updatedMonument).code(201);
 
 
+          }
+          else {
+            return h.response().code(400);
           }
 
         }
