@@ -10,7 +10,6 @@ const Users = {
   authenticate: {
     auth: false,
     handler: async function (request, h) {
-      console.log(request.payload);
       const schema = Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().required().min(5)

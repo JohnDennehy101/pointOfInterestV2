@@ -61,9 +61,9 @@ class MonumentService {
       requestFormData.append('longitude', String(editedMonument.coordinates.longitude));
       requestFormData.append('county', String(editedMonument.county));
       requestFormData.append('province', String(editedMonument.province));
-      requestFormData.append('test', 'true');
-      const image = fs.createReadStream(path.join(__dirname, './testImages/castle.jpg'));
-      requestFormData.append('imageUpload',  image);
+      // requestFormData.append('test', 'true');
+      // const image = fs.createReadStream(path.join(__dirname, './testImages/castle.jpg'));
+      requestFormData.append('imageUpload',  editedMonument.imageUpload);
 
       const response = await axios.put(this.baseUrl + "/api/monuments/" + id, requestFormData, {
         headers: requestFormData.getHeaders()

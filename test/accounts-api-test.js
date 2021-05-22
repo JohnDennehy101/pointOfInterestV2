@@ -21,42 +21,42 @@ var expect  = require("chai").expect;
 var request = require("request");
 
 
-describe('Todo API', function() {
-
-  it('should Register user, login user, check token and delete a todo on /todo/<id> DELETE', function(done) {
-    chai.request(server)
-
-      // register request
-      .post('/api/users/authenticate')
-
-      // send user registration details
-      .send({
-          'email': 'johndennehy101@gmail.com',
-          'password': 'testing'
-        }
-      ) // this is like sending $http.post or this.http.post in Angular
-      .end((err, res) => { // when we get a resonse from the endpoint
-
-        // in other words,
-        // the res object should have a status of 201
-        res.should.have.status(201);
-
-        // follow up with login
-        chai.request(server)
-          .get('/api/users')
-          // send user login details
-
-          .end((err, res) => {
-            console.log('this runs the login part');
-            console.log(res.body);
-            res.body.should.have.property('token');
-            //var token = res.body.token;
-
-          })
-      })
-  })
-
-})
+// describe('Todo API', function() {
+//
+//   it('should Register user, login user, check token and delete a todo on /todo/<id> DELETE', function(done) {
+//     chai.request(server)
+//
+//       // register request
+//       .post('/api/users/authenticate')
+//
+//       // send user registration details
+//       .send({
+//           'email': 'johndennehy101@gmail.com',
+//           'password': 'testing'
+//         }
+//       ) // this is like sending $http.post or this.http.post in Angular
+//       .end((err, res) => { // when we get a resonse from the endpoint
+//
+//         // in other words,
+//         // the res object should have a status of 201
+//         res.should.have.status(201);
+//
+//         // follow up with login
+//         chai.request(server)
+//           .get('/api/users')
+//           // send user login details
+//
+//           .end((err, res) => {
+//             console.log('this runs the login part');
+//             console.log(res.body);
+//             res.body.should.have.property('token');
+//             //var token = res.body.token;
+//
+//           })
+//       })
+//   })
+//
+// })
 
 
 

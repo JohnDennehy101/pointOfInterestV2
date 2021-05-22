@@ -55,7 +55,7 @@ const ImageFunctionality = {
 
         cloudinaryPromise = this.awaitStreamUpload(imageBuffer);
 
-        cloudinarySecureUrl = cloudinaryPromise.then((data) => {
+        cloudinarySecureUrl = cloudinaryPromise.then((data) => {x
           return data.secure_url;
         });
 
@@ -137,6 +137,7 @@ const ImageFunctionality = {
         await newImage.save();
         monumentImageUrlArray.push(newImage._id);
         monumentImageTitleArray.push(newImage.title);
+
       }
     } else if (image.length === 0 || image.hapi.filename !== "") {
       let imageBuffer = await this.handleFileUpload(image);

@@ -111,6 +111,7 @@ const Monuments = {
         return h.response().code(404);
       }
 
+
       let weatherApiResponse = await WeatherFunctionality.getWeatherDetails(monument);
 
       //Wrangle api response to return values in format that will be consumed by view monument view
@@ -242,6 +243,7 @@ const Monuments = {
     },
     handler: async function (request, h) {
       let monument, updatedMonument;
+
       try {
 
         const validationCheck = utils.monumentValidation(request.payload);
@@ -271,7 +273,6 @@ const Monuments = {
             let imageResult = undefined;
 
             if (image !== "") {
-
               //If user has provided new input in images file, new image documents are created
               imageResult = await ImageFunctionality.editMonumentImages(image, allPriorImagesRemoved);
 
@@ -287,9 +288,6 @@ const Monuments = {
 
             //Obtaining other category mongodb document ids (if user has selected additional categorisation to province)
             let newOtherCategoryIds = await CategoryFunctionality.editMonumentAdditionalCategories(categories, monument._id);
-
-
-
 
             monument.title = monumentEdit.title;
             monument.description = monumentEdit.description;

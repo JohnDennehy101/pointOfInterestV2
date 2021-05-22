@@ -11,6 +11,9 @@ const fs = require('fs');
 const dotEnvPath = path.resolve('./.env');
 const fixtures = require("./accounts-test-data.json");
 const utils = require("../app/api/utils.js");
+var mocha = require('mocha')
+var it = mocha.it
+const describe = mocha.describe;
 
 
 require('dotenv').config({ path: dotEnvPath});
@@ -54,6 +57,7 @@ suite("Monument API tests", function () {
     this.timeout(35000);
     // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
     const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+    console.log(c1);
     const c2 = await monumentService.getMonument(c1._id);
     assert.equal(c1.title, c2.title);
   });
@@ -67,26 +71,56 @@ suite("Monument API tests", function () {
     assert.equal(c1.length, 1);
   });
 
-  test("get image ids associated with a monument", async function () {
+  describe("get image ids associated with a monument", async function () {
     this.timeout(35000);
-    // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
-    const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-    console.log(returnedMonument);
-    const c1 = await monumentService.getMonumentImages(returnedMonument._id);
-    // const c2 = await monumentService.getMonument(c1._id);
-    assert.isDefined(c1);
-    console.log(c1);
-    assert.equal(c1.images.length, 1);
+
+    it("should wait", async () => {
+      const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+      assert.isDefined(c1);
+      // console.log(c1);
+      assert.equal(c1.images.length, 1);
+    })
+  });
+
+  // test("get image ids associated with a monument", async function () {
+  //   this.timeout(35000);
+  //   // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+  //   const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+  //   // console.log(returnedMonument);
+  //   // const c1 = await monumentService.getMonumentImages(returnedMonument._id);
+  //   // const c2 = await monumentService.getMonument(c1._id);
+  //   // assert.isDefined(c1);
+  //   // console.log(c1);
+  //   // assert.equal(c1.images.length, 1);
+  //   assert.isDefined(returnedMonument);
+  //   // console.log(c1);
+  //   assert.equal(returnedMonument.images.length, 1);
+  // });
+
+  describe("get weather data for monument coordinates", async function () {
+    this.timeout(35000);
+
+    it("should wait", async () => {
+      const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+      // const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+      // console.log(returnedMonument);
+      const c2 = await monumentService.getMonumentWeather(c1._id);
+      assert.isDefined(c2);
+      assert.isDefined(c2.currentWeather);
+    })
   });
 
   test("get weather data for monument coordinates", async function () {
     this.timeout(35000);
-    // const c1 = await monumentService.createMonumentWithoutImages(newMonument);
-    const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-    const c1 = await monumentService.getMonumentWeather(returnedMonument._id);
+
+    const c1 = await monumentService.createMonumentWithoutImages(newMonument);
+    // const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+    // console.log(returnedMonument);
+    const c2 = await monumentService.getMonumentWeather(c1._id);
     // const c2 = await monumentService.getMonument(c1._id);
-    assert.isDefined(c1);
-    assert.isDefined(c1.currentWeather);
+    console.log(c1);
+    assert.isDefined(c2);
+    assert.isDefined(c2.currentWeather);
   });
 
 
@@ -112,10 +146,6 @@ suite("Monument API tests", function () {
     }
       assert(_.some([monuments[2]], randomCheck), "returnedMonument must be a superset of newMonument");
   });
-
-  test("get monument images - JSON", async function() {
-
-  })
 
 
   test("check that monuments is empty", async function () {
@@ -169,112 +199,108 @@ suite("Monument API tests", function () {
     assert.isDefined(returnedMonument._id);
   });
 
-  test("create a monument - with 1 image", async function() {
-    this.timeout(35000);
 
-    const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
-
-    assert.equal(returnedMonument.title, newMonument.title);
-    assert.equal(returnedMonument.description, newMonument.description);
-    assert.equal(returnedMonument.county, newMonument.county);
-    assert.equal(returnedMonument.province, newMonument.province);
-    assert.equal(returnedMonument.coordinates.latitude, newMonument.latitude);
-    assert.equal(returnedMonument.coordinates.longitude, newMonument.longitude);
-    assert.isDefined(returnedMonument._id);
-  })
-
-  // test("creation of Cloudinary image with MongoDB instance created", async function() {
+  // describe("create a monument - with 1 image", async function () {
   //   this.timeout(35000);
-  //   const image = fs.readFileSync(path.join(__dirname, './testImages/castle.jpg'));
-  //   const imageObject = {
-  //     _data: image,
-  //     hapi: {
-  //       filename: "testImage1.jpg",
-  //     },
-  //     length: 1,
-  //   }
+  //   let returnedMonument;
   //
-  //   const dummyPayload = {
-  //     _data: image,
-  //     imageUpload: {
-  //       hapi: {
-  //         filename: "testImage1.jpg"
-  //       }
-  //     }
-  //   }
-  //   const cloudinaryConfig = {
-  //     cloud_name: "monuments",
-  //     api_key: process.env.cloudinary_api_key,
-  //     api_secret: process.env.cloudinary_api_secret,
-  //   }
-  //   let imageResult = await ImageFunctionality.addMonumentImages(imageObject, dummyPayload, cloudinaryConfig);
+  //   it("should wait", async () => {
   //
-  //   assert.isDefined(imageResult);
-  //   assert.equal(1, imageResult.imageIds.length);
-  //   assert.equal(1, imageResult.imageTitles.length);
-  //   assert.equal('testImage1.jpg', imageResult.imageTitles[0]);
+  //     it ("should wait again", async () => {
+  //       returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+  //       console.log("reeeueueue")
+  //     })
+  //
+  //
+  //     console.log("returned monument");
+  //     console.log(returnedMonument);
+  //
+  //     assert.equal(returnedMonument.title, newMonument.title);
+  //     assert.equal(returnedMonument.description, newMonument.description);
+  //     assert.equal(returnedMonument.county, newMonument.county);
+  //     assert.equal(returnedMonument.province, newMonument.province);
+  //     assert.equal(returnedMonument.coordinates.latitude, newMonument.latitude);
+  //     assert.equal(returnedMonument.coordinates.longitude, newMonument.longitude);
+  //     assert.isDefined(returnedMonument._id);
+  //   })
+  // });
+
+  // test("create a monument - with 1 image", async function() {
+  //   this.timeout(35000);
+  //
+  //   const returnedMonument = await monumentService.createMonumentWithImage(newMonument);
+  //
+  //
+  //   assert.equal(returnedMonument.title, newMonument.title);
+  //   assert.equal(returnedMonument.description, newMonument.description);
+  //   assert.equal(returnedMonument.county, newMonument.county);
+  //   assert.equal(returnedMonument.province, newMonument.province);
+  //   assert.equal(returnedMonument.coordinates.latitude, newMonument.latitude);
+  //   assert.equal(returnedMonument.coordinates.longitude, newMonument.longitude);
+  //   assert.isDefined(returnedMonument._id);
   // })
 
-
-  test("fully edit a monument", async function() {
+  test("Add image functionality", async function() {
     this.timeout(35000);
-    const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
-    const monumentBeforeEdit = returnedMonument;
-    let editedMonument = returnedMonument;
-    editedMonument['title'] = 'New Title';
-    editedMonument['description'] = 'new description';
-    editedMonument['county'] = 'Antrim';
-    editedMonument['province'] = 'Ulster';
-    editedMonument['latitude'] = 2.5;
-    editedMonument['longitude'] = 4.5;
+    const image = fs.readFileSync(path.join(__dirname, './testImages/castle.jpg'));
+    const imageObject = {
+      _data: image,
+      hapi: {
+        filename: "testImage1.jpg",
+      },
+      length: 1,
+    }
 
-    const afterEditMonument = await monumentService.fullyEditMonument(editedMonument._id, editedMonument);
+    const dummyPayload = {
+      _data: image,
+      imageUpload: {
+        hapi: {
+          filename: "testImage1.jpg"
+        }
+      }
+    }
+    const cloudinaryConfig = {
+      cloud_name: "monuments",
+      api_key: process.env.cloudinary_api_key,
+      api_secret: process.env.cloudinary_api_secret,
+    }
+    let imageResult = await ImageFunctionality.addMonumentImages(imageObject, dummyPayload, cloudinaryConfig);
 
-    assert.isDefined(afterEditMonument);
-    assert.equal('New Title', afterEditMonument.title);
-    assert.equal('new description', afterEditMonument.description);
-    assert.equal('Antrim', afterEditMonument.county);
-    assert.equal('Ulster', afterEditMonument.province);
-    assert.equal(-6.543, afterEditMonument.coordinates.latitude);
-    assert.equal(2.653, afterEditMonument.coordinates.longitude);
-    assert.equal(1, afterEditMonument.images.length);
+    assert.isDefined(imageResult);
+    assert.equal(1, imageResult.imageIds.length);
+    assert.equal(1, imageResult.imageTitles.length);
+    assert.equal('testImage1.jpg', imageResult.imageTitles[0]);
   })
 
-  // test("patch - edit monument title", async function() {
-  //   const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
-  //   const titleEdit = {title: 'New Title'};
-  //
-  //   const afterTitleEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, titleEdit);
-  //   assert.isDefined(afterTitleEdit);
-  //   assert.notEqual(returnedMonument.newMonument.title, afterTitleEdit.title);
-  // })
-  // test("patch - edit monument description", async function() {
-  //   const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
-  //   const descriptionEdit = {description: 'New Description'};
-  //
-  //   const afterDescriptionEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, descriptionEdit);
-  //   assert.isDefined(afterDescriptionEdit);
-  //   assert.notEqual(returnedMonument.newMonument.description, afterDescriptionEdit.description);
-  // })
-  // test("patch - edit monument county", async function() {
-  //   const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
-  //   const countyEdit = {county: 'Kerry'};
-  //
-  //   const afterCountyEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, countyEdit);
-  //   assert.isDefined(afterCountyEdit);
-  //   assert.notEqual(returnedMonument.newMonument.county, afterCountyEdit.county);
-  // })
-  // test("patch - edit monument coordinates", async function() {
-  //   const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
-  //   const coordinatesEdit = {coordinates: {
-  //     latitude: 10,
-  //       longitude: 34
-  //     }};
-  //
-  //   const afterCoordinatesEdit = await monumentService.partiallyEditMonument(returnedMonument.newMonument._id, coordinatesEdit);
-  //   assert.isDefined(afterCoordinatesEdit);
-  //   assert.notEqual(returnedMonument.newMonument.coordinates, afterCoordinatesEdit.coordinates);
-  // })
+
+  describe("fully edit a monument", async function () {
+    this.timeout(35000);
+
+    it("should wait", async () => {
+      const returnedMonument = await monumentService.createMonumentWithoutImages(newMonument);
+
+      returnedMonument['title'] = 'New Title';
+      returnedMonument['description'] = 'new description';
+      returnedMonument['county'] = 'Antrim';
+      returnedMonument['province'] = 'Ulster';
+      returnedMonument['latitude'] = 2.5;
+      returnedMonument['longitude'] = 4.5;
+      returnedMonument['imageUpload'] = '';
+
+      const afterEditMonument = await monumentService.fullyEditMonument(returnedMonument._id, returnedMonument);
+
+      assert.isDefined(afterEditMonument);
+      assert.equal('New Title', afterEditMonument.title);
+      assert.equal('new description', afterEditMonument.description);
+      assert.equal('Antrim', afterEditMonument.county);
+      assert.equal('Ulster', afterEditMonument.province);
+      assert.equal(-6.543, afterEditMonument.coordinates.latitude);
+      assert.equal(2.653, afterEditMonument.coordinates.longitude);
+      assert.equal(1, afterEditMonument.images.length);
+
+
+    })
+  });
 
   test("delete a monument", async function () {
     let c = await monumentService.createMonumentWithoutImages(newMonument);
