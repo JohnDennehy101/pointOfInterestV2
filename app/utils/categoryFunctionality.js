@@ -149,27 +149,6 @@ const CategoryFunctionality = {
       }
     }
 
-    //Other Categories code
-
-    // if (!Array.isArray(categories) && categories !== undefined) {
-    //   let categoryQuery = await Category.find({ title: categories });
-    //
-    //   if (categoryQuery.length === 0) {
-    //     let singleNewCategory = new Category({
-    //       title: categories,
-    //       monuments: [monumentId],
-    //     });
-    //
-    //     await singleNewCategory.save();
-    //
-    //     newCategoryObjectIds.push(singleNewCategory._id);
-    //   } else {
-    //     newCategoryObjectIds.push(categoryQuery[0]._id);
-    //     categoryQuery[0].monuments.push(monumentId);
-    //     await categoryQuery[0].save();
-    //   }
-    // }
-
     return newCategoryObjectIds;
   },
 };

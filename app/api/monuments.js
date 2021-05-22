@@ -313,8 +313,6 @@ const Monuments = {
             monument.categories = [monument.categories[0]];
             monument.coordinates.latitude = monumentEdit.latitude;
             monument.coordinates.longitude = monumentEdit.longitude;
-
-            console.log(newOtherCategoryIds);
             //If user has selected other categories for monument, these are appended to the monument categories array
             if (newOtherCategoryIds.length > 0) {
               for (let id in newOtherCategoryIds) {
@@ -338,17 +336,6 @@ const Monuments = {
             return h.response().code(400);
 
 
-            // if (sanitizeHtml(request.params.id)) {
-            //   updatedMonument = await Monument.updateOne({ _id: sanitizeHtml(request.params.id) }, request.payload);
-            // }
-            //
-            // if (!updatedMonument) {
-            //   return h.response().code(404);
-            // }
-
-            // return h.response(updatedMonument).code(201);
-
-
           }
           else {
             return h.response().code(400);
@@ -365,9 +352,6 @@ const Monuments = {
   },
 
   deleteAll: {
-    // auth: {
-    //   strategy: "jwt",
-    // },
     auth: {
       strategy: "jwt",
     },
@@ -393,53 +377,6 @@ const Monuments = {
       return h.request().code(404);
     }
   },
-  // addMonumentImages: {
-  //   auth: false,
-  //   payload: {
-  //     output: "stream",
-  //     parse: true,
-  //     allow: "multipart/form-data",
-  //     maxBytes: 2 * 40000 * 40000,
-  //     multipart: true,
-  //   },
-  //   handler: async function(request,h) {
-  //     try {
-  //       const monument = await Monument.findOne({_id: request.params.id});
-  //
-  //
-  //
-  //       if (!monument) {
-  //         return Boom.notFound("No monument with this id");
-  //       }
-  //
-  //       const monumentImageObjectIds = monument.images;
-  //
-  //       const image = await request.payload.imageUpload;
-  //       //Wrangle request payload to create cloudinary images, add image documents in mongodb and return image document ids and titles
-  //       //Need data in format
-  //       //let imageResult = await ImageFunctionality.addMonumentImages(image, monum);
-  //
-  //       let imageJsonResponse = {
-  //         "numberOfResults": monumentImageObjectIds.length,
-  //         "images": []
-  //       };
-  //
-  //       if (monumentImageObjectIds.length > 0) {
-  //         const images = await Image.find({_id: {$in: monumentImageObjectIds}});
-  //         for (let individualImage in images) {
-  //           imageJsonResponse["images"].push({
-  //             "title": images[individualImage].title,
-  //             "url": images[individualImage].imageUrl
-  //           })
-  //         }
-  //
-  //         return imageJsonResponse;
-  //       }
-  //     } catch (err) {
-  //       return Boom.notFound("No monument with this id")
-  //     }
-  //   }
-  // }
 }
 
 module.exports = Monuments;
