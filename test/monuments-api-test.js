@@ -22,6 +22,8 @@ require('dotenv').config({ path: dotEnvPath});
 suite("Monument API tests", function () {
   let newUser = fixtures.newUser;
 
+
+
   let monuments = monumentTestData.monuments;
   let newMonument = monumentTestData.newMonument;
   let invalidMonumentCoordinates = monumentTestData.invalidMonumentCoordinates;

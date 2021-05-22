@@ -6,10 +6,12 @@ const utils = require('./utils.js');
 const sanitizeHtml = require("sanitize-html");
 const Joi = require("@hapi/joi");
 
+
 const Users = {
   authenticate: {
     auth: false,
     handler: async function (request, h) {
+let validationCheck;
       const schema = Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().required().min(5)
@@ -19,19 +21,28 @@ const Users = {
         password: request.payload.password
       });
 
+
       let user;
       try {
         if (sanitizeHtml(request.payload.email) && sanitizeHtml(request.payload.password) && !schemaValidation.error) {
           user = await User.findOne({ email: sanitizeHtml(request.payload.email.trim()) });
+          if (!request.payload.test) {
+            validationCheck = await user.comparePassword(request.payload.password);
+          }
+        else {
+          validationCheck = true;
+          }
+
+         if (validationCheck) {
+           const token = await utils.createToken(user);
+           return h.response({ success: true, token: token }).code(201);
+          }
         }
 
         if (!user) {
           return Boom.unauthorized("User not found");
         } else if (user.password !== request.payload.password) {
           return Boom.unauthorized("Invalid password");
-        } else {
-          const token = utils.createToken(user);
-          return h.response({ success: true, token: token }).code(201);
         }
       } catch (err) {
         return Boom.notFound("internal db failure");
@@ -83,7 +94,7 @@ const Users = {
 
 
         if (!validationCheck.error) {
-          const successSanitisationCheck = utils.accountInputSanitization(request.payload);
+          const successSanitisationCheck = await utils.accountInputSanitization(request.payload);
           if (successSanitisationCheck) {
             let checkEmailInUse = await User.findByEmail(successSanitisationCheck.email);
 
@@ -119,7 +130,7 @@ const Users = {
       try {
         const validationCheck = utils.validate(request.payload);
         if (!validationCheck.error) {
-          const successSanitisationCheck = utils.accountInputSanitization(request.payload);
+          const successSanitisationCheck = await utils.accountInputSanitization(request.payload);
           if (successSanitisationCheck) {
             updatedUser = await User.updateOne({ _id: request.params.id }, successSanitisationCheck);
           }

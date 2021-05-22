@@ -4,7 +4,7 @@
       "firstName": "Harry",
       "lastName": "Kane",
       "email": "harry@gmail.com",
-      "password": "LongPassword",
+      "password": "testing",
       "userType": "Admin"
     },
     {
@@ -13,13 +13,14 @@
       "email": "lisa@gmail.com",
       "password": "testing",
       "userType": "User"
+
     }
   ],
   "newUser": {
   "firstName": "Bart",
   "lastName": "Simpson",
   "email": "bart@gmail.com",
-  "password": "1345656544",
+  "password": "testing",
   "userType": "User"
   }
 }

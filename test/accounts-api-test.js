@@ -29,10 +29,10 @@ suite("Account API tests", function () {
 
   suiteSetup(async function () {
     this.timeout(35000);
-    await accountService.createUser(newUser);
+    let returnedUser = await accountService.createUser(newUser);
     await accountService.authenticate(newUser);
     await accountService.deleteAllUsers();
-    await accountService.createUser(newUser);
+    returnedUser = await accountService.createUser(newUser);
     await accountService.authenticate(newUser);
   });
 
@@ -46,7 +46,7 @@ suite("Account API tests", function () {
 
   test("valid user passes schema check", async function () {
     this.timeout(35000);
-    const validSchemaCheck = utils.accountValidation(newUser);
+    const validSchemaCheck = await utils.accountValidation(newUser);
     assert.equal(validSchemaCheck, true);
   });
 
@@ -56,7 +56,7 @@ suite("Account API tests", function () {
      firstName: "test",
       lastName: "user"
     }
-    const invalidSchemaCheck = utils.accountValidation(invalidUser);
+    const invalidSchemaCheck = await utils.accountValidation(invalidUser);
     assert.equal(invalidSchemaCheck, false);
   });
 
@@ -66,7 +66,8 @@ suite("Account API tests", function () {
       ...newUser,
       email: "vovovovov@gmail.com"
     }
-    const validSanitizationCheck = utils.accountInputSanitization(validUser);
+    const validSanitizationCheck = await utils.accountInputSanitization(validUser);
+
     assert.equal(validSanitizationCheck.firstName, "Bart");
   });
 
@@ -77,7 +78,7 @@ suite("Account API tests", function () {
       email: "Kpj@gmail.com",
       firstName: "<script>alert('test')</script>"
     }
-    const invalidSanitizationCheck = utils.accountInputSanitization(invalidUser);
+    const invalidSanitizationCheck = await utils.accountInputSanitization(invalidUser);
     assert.equal(invalidSanitizationCheck, false);
   });
 
@@ -87,7 +88,6 @@ suite("Account API tests", function () {
     for (let c of users) {
     await accountService.createUser(c);
     }
-
     const allUsers = await accountService.getUsers();
     assert.equal(allUsers.length, users.length + 1);
   });
@@ -129,12 +129,13 @@ suite("Account API tests", function () {
       lastName: user.lastName,
       email: user.email,
       password: user.password,
+      userType: user.userType
     };
     users.unshift(testUser);
 
     const allUsers = await accountService.getUsers();
     for (var i = 0; i < users.length; i++) {
-      assert(_.some([allUsers[i]], users[i]), "returnedUser must be a superset of newUser");
+      assert.equal(allUsers[i].email, users[i].email, "user emails must match");
     }
   });
 
@@ -152,7 +153,8 @@ suite("Account API tests", function () {
       email: "babababa@gmail.com",
     }
     const returnedUser = await accountService.createUser(editedNewUser);
-    assert(_.some([returnedUser], editedNewUser), "returnedUser must be a superset of newUser");
+    assert.equal(returnedUser.email, editedNewUser.email);
+    assert.equal(returnedUser.userType, editedNewUser.userType);
     assert.isDefined(returnedUser._id);
   });
 

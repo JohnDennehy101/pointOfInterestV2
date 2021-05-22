@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/user");
 const sanitizeHtml = require("sanitize-html");
 const Joi = require("@hapi/joi");
+const bcrypt = require("bcrypt");
 
 exports.createToken = function (user) {
   return jwt.sign({ id: user._id, email: user.email }, 'secretpasswordnotrevealedtoanyone', {
@@ -102,15 +103,21 @@ exports.monumentInputSanitization = function(payload) {
   }
 }
 
+exports.hashPassword = async function (password, numberOfRounds) {
+  let hashedPassword = await bcrypt.hash(password,  numberOfRounds);
+  return hashedPassword;
+}
 
 
-exports.accountInputSanitization = function(payload) {
+
+exports.accountInputSanitization = async function(payload) {
   if (sanitizeHtml(payload.firstName) && sanitizeHtml(payload.lastName) &&  sanitizeHtml(payload.email) && sanitizeHtml(payload.password)  &&  sanitizeHtml(payload.userType)) {
+    let hashedPassword = await this.hashPassword(payload.password, 10);
     return {
       firstName: sanitizeHtml(payload.firstName),
       lastName: sanitizeHtml(payload.lastName),
       email: sanitizeHtml(payload.email),
-      password: sanitizeHtml(payload.password),
+      password: hashedPassword,
       userType: sanitizeHtml(payload.userType)
     }
   }

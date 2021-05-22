@@ -12,9 +12,11 @@ suite("Authentication API tests", function () {
   const accountService = new AccountService("http://localhost:4000");
 
   setup(async function () {
-    const returnedUser = await accountService.createUser(newUser);
-    const response = await accountService.authenticate(newUser);
-    await accountService.deleteAllUsers();
+    this.timeout(35000);
+      let returnedUser = await accountService.createUser(newUser);
+      await accountService.authenticate(newUser);
+      await accountService.deleteAllUsers();
+
   });
   teardown(async function () {
     await accountService.deleteAllUsers();
@@ -26,6 +28,19 @@ suite("Authentication API tests", function () {
     const response = await accountService.authenticate(newUser);
     assert(response.success);
     assert.isDefined(response.token);
+  });
+
+  test("failed authentication for non-existent email", async function () {
+    const nonExistentUser = {
+      ...newUser,
+      email: "abababa@gmail.com"
+    }
+
+    const response = await accountService.authenticate(nonExistentUser);
+    assert.isNull(response);
+    await accountService.authenticate(users[0]);
+    await accountService.createUser(newUser);
+    await accountService.authenticate(newUser);
   });
 
   test("verify Token", async function () {
