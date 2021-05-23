@@ -84,7 +84,7 @@ const ImageFunctionality = {
         let dateObject = new Date();
         let dateString = dateObject.toString();
         imageFileName = "pointOfInterestDefaultImage " + dateString;
-        cloudinarySecureUrl = "/src/assets/pointOfInterestDefaultImage.png";
+        cloudinarySecureUrl = "/pointOfInterestDefaultImage.png";
       }
 
       let cloudinarySecureUrlPromiseResolved = await cloudinarySecureUrl;
@@ -164,7 +164,7 @@ const ImageFunctionality = {
       let dateObject = new Date();
       let dateString = dateObject.toString();
       imageFileName = "pointOfInterestDefaultImage " + dateString;
-      cloudinarySecureUrl = "/src/assets/pointOfInterestDefaultImage.png";
+      cloudinarySecureUrl = "/pointOfInterestDefaultImage.png";
 
 
       let cloudinarySecureUrlPromiseResolved = cloudinarySecureUrl;
