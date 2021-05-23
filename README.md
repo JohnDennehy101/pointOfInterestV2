@@ -12,20 +12,22 @@ I chose to focus on Irish national monuments for this assignment.
 
 ## API
 
-More detail to be provided on API detail here.
+For this assignment, the Hapi framework was used to develop a backend API for CRUD operations around user and point of interest management. Another significant focus of this assignment was unit testing with Mocha. NYC (also know as istanbul) tool used to generate code coverage reports. API routes are secured using Json Web Tokens (JWT).
 
-## Technology Stack
+## Code Coverage
 
-- handlebars
-- uikit
+![Code Coverage Overview](https://github.com/JohnDennehy101/pointOfInterestV2/blob/main/public/images/codeCoverage.png)
+
+## Technology Stack - BackEnd API
+
 - hapi
 - mongodb
 - Cloudinary
+- OpenWeather API
+- Joi
+- sanitizeHtml
+- JWT
 
-## Glitch Application
+## AWS Deployment
 
-Here's a link to a live version of the application on Glitch: [Glitch Application Link](https://point-of-interest-v1.glitch.me/)
-
-## Heroku Application
-
-Here's a link to a live version of the application on Heroku: [Heroku Application Link](https://point-of-interest-v1.herokuapp.com/)
+Here's a link to a live version of the application on AWS: [API Application Link](https://point-of-interest-v1.herokuapp.com/)
