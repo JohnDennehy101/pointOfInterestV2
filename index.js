@@ -24,17 +24,7 @@ async function init() {
   await server.register(Cookie);
   await server.register(require('hapi-auth-jwt2'));
   server.validator(require("@hapi/joi"));
-  server.views({
-    engines: {
-      hbs: HandleBars,
-    },
-    relativeTo: __dirname,
-    path: "./app/views",
-    layoutPath: "./app/views/layouts",
-    partialsPath: "./app/views/partials",
-    layout: true,
-    isCached: false,
-  });
+
 
   server.auth.strategy("session", "cookie", {
     cookie: {
