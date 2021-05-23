@@ -13,6 +13,7 @@ module.exports = [
   { method: 'GET', path: '/api/monuments/{id}/weather', config: Monuments.getMonumentWeather },
   { method: 'GET', path: '/api/monuments/{id}/images', config: Monuments.findMonumentImages },
   { method: 'GET', path: '/api/monuments/categories', config: Monuments.findNonProvinceCategories },
+  { method: 'GET', path: '/api/monuments/provinces', config: Monuments.findProvinceCategories },
   { method: 'POST', path: '/api/users/authenticate', config: Users.authenticate },
   { method: "POST", path: "/api/monuments", config: Monuments.create },
   { method: "PUT", path: "/api/monuments/{id}", config: Monuments.edit },

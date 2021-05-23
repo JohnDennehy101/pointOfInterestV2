@@ -7,6 +7,7 @@
       "email": "johndennehy101@gmail.com",
       "password": "$2b$10$z.A9Jwh0HdqQg3fUwQhmdenjuCY6dPpjioasdWpmvYa0575TiJu02",
       "userType": "Admin",
+      "lastLogin": "23-May-2021 15:07:04",
       "numberOfRecords": 1
     },
     "marge": {
@@ -15,6 +16,7 @@
       "email": "marge@gmail.com",
       "password": "$2b$10$z.A9Jwh0HdqQg3fUwQhmdenjuCY6dPpjioasdWpmvYa0575TiJu02",
       "userType": "User",
+      "lastLogin": "23-May-2021 15:04:04",
       "numberOfRecords": 2
 }
   },

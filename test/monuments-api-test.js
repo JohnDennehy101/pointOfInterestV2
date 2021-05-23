@@ -71,6 +71,13 @@ suite("Monument API tests", function () {
     assert.equal(c1.length, 1);
   });
 
+  test("get all province categories", async function () {
+    this.timeout(35000);
+    const c1 = await monumentService.getProvinceCategories();
+    assert.isDefined(c1)
+    assert.equal(c1.length, 4);
+  });
+
   describe("get image ids associated with a monument", async function () {
     this.timeout(35000);
 

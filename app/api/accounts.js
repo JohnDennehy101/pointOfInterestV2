@@ -5,6 +5,7 @@ const Boom = require("@hapi/boom");
 const utils = require('./utils.js');
 const sanitizeHtml = require("sanitize-html");
 const Joi = require("@hapi/joi");
+const DateFunctionality = require("../utils/dateFunctionality");
 
 
 const Users = {
@@ -34,6 +35,9 @@ let validationCheck;
           }
 
          if (validationCheck) {
+           let date = new Date();
+           user.lastLogin = DateFunctionality.formatDateWithTime(date);
+           await user.save();
            const token = await utils.createToken(user);
            return h.response({ success: true, token: token }).code(201);
           }
@@ -103,6 +107,9 @@ let validationCheck;
             }
 
             newUser = new User(successSanitisationCheck);
+
+            let date = new Date();
+            newUser.lastLogin = DateFunctionality.formatDateWithTime(date);
 
             user = await newUser.save();
           }

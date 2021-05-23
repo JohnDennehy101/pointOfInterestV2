@@ -59,6 +59,22 @@ const Monuments = {
       }
     },
   },
+  findProvinceCategories: {
+    auth: {
+      strategy: "jwt",
+    },
+    handler: async function (request, h) {
+      try {
+        const categories = await CategoryFunctionality.findProvinceCategories();
+        if (!categories) {
+          return [];
+        }
+        return categories;
+      } catch (err) {
+        return Boom.notFound("Error finding categories");
+      }
+    },
+  },
   findMonumentImages: {
     auth: {
       strategy: "jwt",

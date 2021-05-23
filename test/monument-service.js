@@ -43,6 +43,15 @@ class MonumentService {
     }
   }
 
+  async getProvinceCategories() {
+    try {
+      const response = await axios.get(this.baseUrl + "/api/monuments/provinces");
+      return response.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async getMonumentWeather(id) {
     try {
       const response = await axios.get(this.baseUrl + "/api/monuments/" + id + "/weather");
