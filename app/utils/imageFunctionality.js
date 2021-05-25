@@ -55,7 +55,7 @@ const ImageFunctionality = {
 
         cloudinaryPromise = this.awaitStreamUpload(imageBuffer);
 
-        cloudinarySecureUrl = cloudinaryPromise.then((data) => {x
+        cloudinarySecureUrl = cloudinaryPromise.then((data) => {
           return data.secure_url;
         });
 
