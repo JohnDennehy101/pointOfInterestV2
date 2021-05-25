@@ -28,6 +28,10 @@ For this assignment, the Hapi framework was used to develop a backend API for CR
 - sanitizeHtml
 - JWT
 
-## AWS Deployment
+## Heroku Deployment
 
-Here's a link to a live version of the application on AWS: [API Application Link](https://point-of-interest-v1.herokuapp.com/)
+Here's a link to a live version of the application on Heroku: [API Application Link](https://point-of-interest-api.herokuapp.com)
+
+
+
+
