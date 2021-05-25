@@ -159,6 +159,7 @@ const Monuments = {
       multipart: true,
     },
     handler: async function (request, h) {
+      let categories;
 
       const validationCheck = utils.monumentValidation(request.payload);
 
@@ -171,8 +172,12 @@ const Monuments = {
           //image variable contains value from image input field
           const data = await successSanitisationCheck;
           const image = request.payload.imageUpload;
-          //categories variable contains value from request.payload.category
-          let categories = successSanitisationCheck.category;
+          //categoriesString variable contains value from sanitisation returned from request.payload.category
+          let categoriesString = successSanitisationCheck.category;
+
+          if (categoriesString.length > 0) {
+            categories = categoriesString.split(",");
+          }
 
           //Wrangle request payload to create cloudinary images, add image documents in mongodb and return image document ids and titles
           let imageResult = await ImageFunctionality.addMonumentImages(image, request.payload);
